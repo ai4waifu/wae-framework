@@ -1,7 +1,5 @@
 //! Linux desktop binding entry (WebKitGTK planned).
 
-#![warn(missing_docs)]
-
 use wae_platform::{DesktopIpcHandler, DesktopOpenOptions, PlatformError, Result};
 
 /// Run a desktop shell on Linux. Skeleton until WebKitGTK is wired.

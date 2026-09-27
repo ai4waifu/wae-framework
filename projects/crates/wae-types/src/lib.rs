@@ -2,8 +2,6 @@
 //!
 //! 本 crate 为产品边界骨架。实现按协议与分层逐步补齐。
 
-#![warn(missing_docs)]
-
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 

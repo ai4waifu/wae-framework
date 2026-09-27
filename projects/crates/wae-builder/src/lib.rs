@@ -3,8 +3,6 @@
 //! Compiles `wae-napi`, stages application icons, verifies the product tree, and packages
 //! release archives for distribution or [`wae-updater`] consumption.
 
-#![warn(missing_docs)]
-
 mod compile;
 mod error;
 mod icon;

@@ -4,8 +4,6 @@
 //! and native addon replacement. WAE (`@wae/wae`) itself is upgraded via npm — this crate
 //! targets end-user product bundles.
 
-#![warn(missing_docs)]
-
 mod apply;
 mod archive;
 mod channel;

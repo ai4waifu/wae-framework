@@ -89,14 +89,14 @@ fn status_from_check(
 
 #[napi]
 pub fn check_product_update(options: ProductUpdateOptions) -> Result<ProductUpdateStatus> {
-    let updater = build_updater(&options).map_err(|e| Error::from_reason(e))?;
+    let updater = build_updater(&options).map_err(Error::from_reason)?;
     let check = updater.check_version().map_err(|e| Error::from_reason(e.to_string()))?;
     Ok(status_from_check(&options, &updater, check.availability.is_none(), check.availability.as_ref()))
 }
 
 #[napi]
 pub fn download_product_update(options: ProductUpdateOptions) -> Result<ProductUpdateStatus> {
-    let updater = build_updater(&options).map_err(|e| Error::from_reason(e))?;
+    let updater = build_updater(&options).map_err(Error::from_reason)?;
     let check = updater.check_version().map_err(|e| Error::from_reason(e.to_string()))?;
     let package = check.availability.ok_or_else(|| Error::from_reason("already up to date"))?;
     let downloaded = updater.download(&package).map_err(|e| Error::from_reason(e.to_string()))?;
@@ -110,7 +110,7 @@ pub fn apply_product_update(options: ProductUpdateOptions) -> Result<ProductUpda
     if options.native_path.is_empty() {
         return Err(Error::from_reason("native_path is required to apply a product update"));
     }
-    let updater = build_updater(&options).map_err(|e| Error::from_reason(e))?;
+    let updater = build_updater(&options).map_err(Error::from_reason)?;
     if let Some(staged) = options.staged_native_path.as_deref().filter(|s| !s.is_empty()) {
         let check = updater.check_version().map_err(|e| Error::from_reason(e.to_string()))?;
         let package = check.availability.ok_or_else(|| Error::from_reason("already up to date"))?;

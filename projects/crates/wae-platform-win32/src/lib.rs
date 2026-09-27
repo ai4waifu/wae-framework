@@ -1,7 +1,5 @@
 //! Windows desktop binding entry.
 
-#![warn(missing_docs)]
-
 #[cfg(windows)]
 mod imp;
 

@@ -1,6 +1,5 @@
 //! Node-API surface for WAE host (desktop shell + protocol router).
 
-#![warn(missing_docs)]
 #![deny(clippy::all)]
 
 mod updater;

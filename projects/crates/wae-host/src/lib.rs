@@ -1,7 +1,5 @@
 //! WAE self-hosted desktop entry (platform bindings selected by target OS).
 
-#![warn(missing_docs)]
-
 mod ipc;
 
 pub use ipc::{HostIpcRouter, parse_window_ipc};
@@ -25,17 +23,17 @@ pub fn run_desktop(options: DesktopOpenOptions) -> Result<()> {
 
     #[cfg(windows)]
     {
-        return wae_platform_win32::run_desktop(options, Box::new(session));
+        wae_platform_win32::run_desktop(options, Box::new(session))
     }
 
     #[cfg(target_os = "macos")]
     {
-        return wae_platform_darwin::run_desktop(options, Box::new(session));
+        wae_platform_darwin::run_desktop(options, Box::new(session))
     }
 
     #[cfg(target_os = "linux")]
     {
-        return wae_platform_linux::run_desktop(options, Box::new(session));
+        wae_platform_linux::run_desktop(options, Box::new(session))
     }
 
     #[cfg(not(any(windows, target_os = "macos", target_os = "linux")))]

@@ -2,8 +2,6 @@
 //!
 //! 配合 `@wae/client` 与 `@wae/wae-*`：消息传输、能力分发、WASM 侧支撑。
 
-#![warn(missing_docs)]
-
 use wae_types::{ClientMessage, HostMessage};
 
 /// 消息传输抽象。

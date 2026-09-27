@@ -1,7 +1,5 @@
 //! Platform-neutral desktop host options and IPC result types.
 
-#![warn(missing_docs)]
-
 mod runtime;
 
 pub use runtime::{PlatformDesktopFactory, PlatformRuntime, PlatformWebView, PlatformWindow};

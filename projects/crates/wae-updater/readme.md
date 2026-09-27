@@ -1,11 +1,12 @@
 # wae-updater
 
-Rust library for **`wae build` products**: version detection, release channel resolution, silent or explicit download, and native addon replacement.
+Rust library for **`wae build` products**: version detection, release channel resolution, silent or explicit download,
+and native addon replacement.
 
-| Layer | Upgrade path |
-|-------|----------------|
-| **WAE toolchain** (`@wae/wae`, dev deps) | npm / pnpm — **not** this crate |
-| **Shipped app** (your product) | GitHub Releases → native addon in `lib/` |
+| Layer                                    | Upgrade path                             |
+|------------------------------------------|------------------------------------------|
+| **WAE toolchain** (`@wae/wae`, dev deps) | npm / pnpm — **not** this crate          |
+| **Shipped app** (your product)           | GitHub Releases → native addon in `lib/` |
 
 ## Flow
 
@@ -18,21 +19,21 @@ run(policy)         → UpToDate | Checked | Downloaded | Applied
 
 ## Channels
 
-| `ReleaseChannel` | Resolves |
-|------------------|----------|
-| `Stable` | `/releases/latest`, rejects prerelease |
-| `Beta` | `/releases/latest`, allows prerelease |
-| `Pinned(tag)` | `/releases/tags/{tag}` (nightly, hotfix) |
+| `ReleaseChannel` | Resolves                                 |
+|------------------|------------------------------------------|
+| `Stable`         | `/releases/latest`, rejects prerelease   |
+| `Beta`           | `/releases/latest`, allows prerelease    |
+| `Pinned(tag)`    | `/releases/tags/{tag}` (nightly, hotfix) |
 
 Legacy `allow_prerelease` / `tag` map to `Beta` / `Pinned` via `ReleaseChannel::from_legacy`.
 
 ## Download policy
 
-| `DownloadPolicy` | Behavior |
-|------------------|----------|
-| `CheckOnly` | Version check only — **explicit** UI flow |
+| `DownloadPolicy`      | Behavior                                               |
+|-----------------------|--------------------------------------------------------|
+| `CheckOnly`           | Version check only — **explicit** UI flow              |
 | `DownloadIfAvailable` | Auto-download when newer — **silent** background fetch |
-| `DownloadAndApply` | Check + download + replace native artifact |
+| `DownloadAndApply`    | Check + download + replace native artifact             |
 
 ## Usage
 
@@ -59,4 +60,5 @@ if let Some(package) = updater.check_version()?.availability {
 }
 ```
 
-TypeScript (`@wae/wae`): `checkProductUpdateFromManifest` / `downloadProductUpdateFromManifest` / `applyProductUpdateFromManifest`.
+TypeScript (`@wae/wae`): `checkProductUpdateFromManifest` / `downloadProductUpdateFromManifest` /
+`applyProductUpdateFromManifest`.

@@ -27,6 +27,9 @@ default-members = [
     "projects/crates/wae-builder",
 ]
 
+[workspace.lints.rust]
+missing_docs = "allow"
+
 [workspace.package]
 version = "0.1.0"
 edition = "2024"

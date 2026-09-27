@@ -1,7 +1,5 @@
 //! macOS desktop binding entry (WKWebView + AppKit planned).
 
-#![warn(missing_docs)]
-
 use wae_platform::{DesktopIpcHandler, DesktopOpenOptions, PlatformError, Result};
 
 /// Run a desktop shell on macOS. Skeleton until WKWebView is wired.
