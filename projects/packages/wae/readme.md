@@ -64,10 +64,11 @@ Behavior:
 Produces the **shipped product** under `dist/<platform>/`:
 
 ```text
-dist/win32-x64/
+dist/web/
   frontend/                 # Vite build output
-  lib/win32-x64-msvc.node   # platform-specific native addon
-  wae-product.json          # name, version, update.github, nativePath
+  server/worker.mjs         # when deployTarget=cloudflare (node.mjs / deno.mjs otherwise)
+  wrangler.toml             # cloudflare deploy scaffold (build output only)
+  wae-product.json          # name, version, server.entry, update.github, nativePath
 ```
 
 `preview` / `check` / `test` / `generate` are not wired yet. `create` materializes the app template with a single deploy target host.

@@ -101,11 +101,15 @@ await app.fetch(new Request("http://x/hello")); // → JSON
 ```bash
 pnpm run check:boundary
 pnpm run check:host-http
+pnpm run check:create
+pnpm run check:server-bundle
+pnpm run check:deploy-target-deps
+pnpm run check:wrangler
 pnpm run check:ts
 pnpm exec wae help
 ```
 
-`wae create` / `build` / `generate` etc. remain skeletons.
+`wae create` and `wae build` are wired for web apps with `deployTarget` host bundling. `preview` / `check` / `test` / `generate` remain skeletons.
 
 ## How requests flow
 
@@ -166,6 +170,10 @@ pnpm run check:boundary
 pnpm run check:host-http
 pnpm run check:host-cloudflare-kv
 pnpm run check:host-deno
+pnpm run check:create
+pnpm run check:server-bundle
+pnpm run check:deploy-target-deps
+pnpm run check:wrangler
 pnpm run fmt:check
 pnpm run publish:dry
 ```
