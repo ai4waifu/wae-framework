@@ -5,6 +5,7 @@ a TSX compiler and does **not** put Rust runtime into the frontend.
 
 CLI parsing lives in [`@wae/commander`](../commander/readme.md) (Commander.js). This package injects `run` / `build`
 handlers — no duplicate flag parsing.
+
 ## Relationship with Vite
 
 Like common Tauri templates: **Vite is typical but not hard-wired to Vite**.

@@ -4,19 +4,19 @@
  *
  *   node scripts/stage-platform-native-artifacts.mjs --from artifacts/
  */
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { PLATFORM_NATIVE, libFileName } from "./platform-native-manifest.mjs";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { libFileName, PLATFORM_NATIVE } from './platform-native-manifest.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function arg(name) {
     const i = process.argv.indexOf(name);
     return i >= 0 ? process.argv[i + 1] : undefined;
 }
 
-const fromDir = path.resolve(ROOT, arg("--from") ?? "artifacts");
+const fromDir = path.resolve(ROOT, arg('--from') ?? 'artifacts');
 if (!fs.existsSync(fromDir)) {
     console.error(`stage-platform-native-artifacts: missing directory ${fromDir}`);
     process.exit(1);
@@ -26,7 +26,7 @@ function collectNodeFiles(dir, out = []) {
     for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, ent.name);
         if (ent.isDirectory()) collectNodeFiles(full, out);
-        else if (ent.name.endsWith(".node")) out.push(full);
+        else if (ent.name.endsWith('.node')) out.push(full);
     }
     return out;
 }
@@ -35,7 +35,7 @@ let staged = 0;
 
 for (const filePath of collectNodeFiles(fromDir)) {
     const entName = path.basename(filePath);
-    const base = entName.replace(/\.node$/, "");
+    const base = entName.replace(/\.node$/, '');
     let platformId = PLATFORM_NATIVE[base] ? base : null;
     if (!platformId) {
         for (const [id, meta] of Object.entries(PLATFORM_NATIVE)) {
@@ -51,7 +51,7 @@ for (const filePath of collectNodeFiles(fromDir)) {
     }
 
     const { dir } = PLATFORM_NATIVE[platformId];
-    const destDir = path.join(ROOT, "projects/packages", dir, "lib");
+    const destDir = path.join(ROOT, 'projects/packages', dir, 'lib');
     const destFile = path.join(destDir, libFileName(platformId));
     fs.mkdirSync(destDir, { recursive: true });
     fs.copyFileSync(filePath, destFile);
@@ -60,7 +60,7 @@ for (const filePath of collectNodeFiles(fromDir)) {
 }
 
 if (staged === 0) {
-    console.error("stage-platform-native-artifacts: no .node artifacts found");
+    console.error('stage-platform-native-artifacts: no .node artifacts found');
     process.exit(1);
 }
 

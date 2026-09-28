@@ -15,16 +15,16 @@ export type Navigation = {
 };
 
 function toHref(to: RouteTarget): string {
-    if (typeof to === "string") return to;
-    return `${to.pathname}${to.search ?? ""}${to.hash ?? ""}`;
+    if (typeof to === 'string') return to;
+    return `${to.pathname}${to.search ?? ''}${to.hash ?? ''}`;
 }
 
 /** 浏览器 History API 的最小实现；框架 router 由 adapter 替换。 */
 export function createBrowserNavigation(): Navigation {
     return {
         current() {
-            if (typeof location === "undefined") {
-                return { pathname: "/", search: "", hash: "" };
+            if (typeof location === 'undefined') {
+                return { pathname: '/', search: '', hash: '' };
             }
             return {
                 pathname: location.pathname,
@@ -33,13 +33,13 @@ export function createBrowserNavigation(): Navigation {
             };
         },
         async navigate(to) {
-            if (typeof history !== "undefined") {
-                history.pushState({}, "", toHref(to));
+            if (typeof history !== 'undefined') {
+                history.pushState({}, '', toHref(to));
             }
         },
         async replace(to) {
-            if (typeof history !== "undefined") {
-                history.replaceState({}, "", toHref(to));
+            if (typeof history !== 'undefined') {
+                history.replaceState({}, '', toHref(to));
             }
         },
     };

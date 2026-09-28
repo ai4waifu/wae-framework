@@ -6,10 +6,10 @@ export type WsClient = {
 };
 
 export function createWebSocketClient(url: string): WsClient {
-    if (typeof WebSocket === "undefined") {
+    if (typeof WebSocket === 'undefined') {
         return {
             send() {
-                throw new Error("WebSocket unavailable");
+                throw new Error('WebSocket unavailable');
             },
             close() {},
         };

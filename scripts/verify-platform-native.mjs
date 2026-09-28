@@ -2,22 +2,22 @@
 
 /** Fail if any published `@wae/wae-*` shell is missing `lib/*.node`. */
 
-import fs from "node:fs";
+import fs from 'node:fs';
 
-import path from "node:path";
+import path from 'node:path';
 
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from 'node:url';
 
-import { PUBLISH_NATIVE_PLATFORMS, libPath } from "./platform-native-manifest.mjs";
+import { libPath, PUBLISH_NATIVE_PLATFORMS } from './platform-native-manifest.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const skipMobile = process.argv.includes("--skip-mobile");
+const skipMobile = process.argv.includes('--skip-mobile');
 
 let failed = false;
 
 for (const platformId of PUBLISH_NATIVE_PLATFORMS) {
-    if (skipMobile && (platformId === "android-arm64" || platformId === "ios-arm64")) {
+    if (skipMobile && (platformId === 'android-arm64' || platformId === 'ios-arm64')) {
         console.log(`verify-platform-native: skip ${platformId} (--skip-mobile)`);
 
         continue;
@@ -47,9 +47,9 @@ for (const platformId of PUBLISH_NATIVE_PLATFORMS) {
 }
 
 if (failed) {
-    console.error("verify-platform-native: one or more platform libs missing");
+    console.error('verify-platform-native: one or more platform libs missing');
 
     process.exit(1);
 }
 
-console.log("verify-platform-native: all required lib/*.node present");
+console.log('verify-platform-native: all required lib/*.node present');

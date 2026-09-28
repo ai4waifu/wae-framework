@@ -1,6 +1,6 @@
 /** @wae/server-node — 长驻进程适配（骨架：不直接依赖 node:http，便于类型检查）。 */
 
-import type { WaeServerApp } from "@wae/server";
+import type { WaeServerApp } from '@wae/server';
 
 export type ServeOptions = {
     port?: number;
@@ -19,7 +19,7 @@ export type ServeHandle = {
  */
 export function serve(app: WaeServerApp, options: ServeOptions = {}): ServeHandle {
     const port = options.port ?? 3000;
-    const hostname = options.hostname ?? "127.0.0.1";
+    const hostname = options.hostname ?? '127.0.0.1';
     void app;
     return {
         port,

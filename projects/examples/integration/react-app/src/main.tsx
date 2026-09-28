@@ -1,14 +1,14 @@
-import { createClient } from "@wae/client";
-import { WaeProvider, useWae } from "@wae/adapter-react";
-import { StrictMode, useState } from "react";
-import { createRoot } from "react-dom/client";
-import "./styles.css";
+import { useWae, WaeProvider } from '@wae/adapter-react';
+import { createClient } from '@wae/client';
+import { StrictMode, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import './styles.css';
 
-const client = createClient({ server: { baseUrl: "/api" } });
+const client = createClient({ server: { baseUrl: '/api' } });
 
 function Panel() {
     const wae = useWae();
-    const [status, setStatus] = useState("等待 ping…");
+    const [status, setStatus] = useState('等待 ping…');
     const [ticks, setTicks] = useState(0);
 
     return (
@@ -28,7 +28,7 @@ function Panel() {
                     onClick={() => {
                         const next = ticks + 1;
                         setTicks(next);
-                        setStatus(`client ok · baseUrl=${wae.server ? "set" : "?"} · #${next}`);
+                        setStatus(`client ok · baseUrl=${wae.server ? 'set' : '?'} · #${next}`);
                     }}
                 >
                     ping client
@@ -38,8 +38,8 @@ function Panel() {
     );
 }
 
-const el = document.getElementById("root");
-if (!el) throw new Error("#root missing");
+const el = document.getElementById('root');
+if (!el) throw new Error('#root missing');
 createRoot(el).render(
     <StrictMode>
         <WaeProvider client={client}>

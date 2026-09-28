@@ -1,5 +1,5 @@
-import type { WaeClient } from "@wae/client";
-import { createComponent, createContext, useContext, type ParentProps } from "solid-js";
+import type { WaeClient } from '@wae/client';
+import { createComponent, createContext, type ParentProps, useContext } from 'solid-js';
 
 const WaeContext = createContext<WaeClient>();
 
@@ -19,11 +19,11 @@ export function WaeProvider(props: WaeProviderProps) {
 export function useWae(): WaeClient {
     const client = useContext(WaeContext);
     if (!client) {
-        throw new Error("useWae() 需要包裹在 <WaeProvider client={…}> 内");
+        throw new Error('useWae() 需要包裹在 <WaeProvider client={…}> 内');
     }
     return client;
 }
 
-export default function solid(): { name: "solid" } {
-    return { name: "solid" };
+export default function solid(): { name: 'solid' } {
+    return { name: 'solid' };
 }

@@ -1,6 +1,6 @@
 /** WAE CLI command tree — Commander.js only; handlers injected by `@wae/wae`. */
 
-import { Command } from "commander";
+import { Command } from 'commander';
 
 export type WaeRunOptions = {
     platform?: string;
@@ -18,7 +18,7 @@ export type WaeBuildOptions = {
     extraArgs: string[];
 };
 
-export type RunDevHandler = (options: WaeRunOptions, mode: "run" | "dev") => Promise<void>;
+export type RunDevHandler = (options: WaeRunOptions, mode: 'run' | 'dev') => Promise<void>;
 export type BuildHandler = (options: WaeBuildOptions) => Promise<void>;
 export type StubHandler = (cmd: string, args: string[]) => void | Promise<void>;
 
@@ -30,20 +30,17 @@ export type WaeCommandHandlers = {
 
 function attachRunOptions(cmd: Command): Command {
     return cmd
-        .option("-p, --platform <id>", "client platform id (web, win32-x64, …)")
-        .option("--port <n>", "dev server port")
-        .option("--host <addr>", "dev server bind address")
-        .option("--open", "open browser (web default)")
-        .option("--no-open", "do not open browser");
+        .option('-p, --platform <id>', 'client platform id (web, win32-x64, …)')
+        .option('--port <n>', 'dev server port')
+        .option('--host <addr>', 'dev server bind address')
+        .option('--open', 'open browser (web default)')
+        .option('--no-open', 'do not open browser');
 }
 
 export function createWaeProgram(handlers: WaeCommandHandlers = {}): Command {
-    const program = new Command()
-        .name("wae")
-        .description("WAE project CLI")
-        .showHelpAfterError("(use wae help for usage)");
+    const program = new Command().name('wae').description('WAE project CLI').showHelpAfterError('(use wae help for usage)');
 
-    const runAction = async (mode: "run" | "dev", _opts: unknown, cmd: Command) => {
+    const runAction = async (mode: 'run' | 'dev', _opts: unknown, cmd: Command) => {
         const options = readRunOptions(cmd);
         if (handlers.run) {
             await handlers.run(options, mode);
@@ -54,33 +51,33 @@ export function createWaeProgram(handlers: WaeCommandHandlers = {}): Command {
 
     attachRunOptions(
         program
-            .command("run")
-            .description("Run app for current platform (web: Vite dev server)")
-            .action(async (_opts, cmd) => runAction("run", _opts, cmd)),
+            .command('run')
+            .description('Run app for current platform (web: Vite dev server)')
+            .action(async (_opts, cmd) => runAction('run', _opts, cmd)),
     );
 
     attachRunOptions(
         program
-            .command("dev")
-            .description("Alias for wae run")
-            .action(async (_opts, cmd) => runAction("dev", _opts, cmd)),
+            .command('dev')
+            .description('Alias for wae run')
+            .action(async (_opts, cmd) => runAction('dev', _opts, cmd)),
     );
 
     program
-        .command("build")
-        .description("Build shipped product (frontend + native addon + wae-product.json)")
-        .option("-p, --platform <id>", "client platform id (web, win32-x64, …)")
-        .option("--out-dir <dir>", "override product output base directory")
+        .command('build')
+        .description('Build shipped product (frontend + native addon + wae-product.json)')
+        .option('-p, --platform <id>', 'client platform id (web, win32-x64, …)')
+        .option('--out-dir <dir>', 'override product output base directory')
         .action(async (_opts, cmd) => {
             const options = readBuildOptions(cmd);
             if (handlers.build) {
                 await handlers.build(options);
                 return;
             }
-            (handlers.stub ?? defaultStub)("build", options.extraArgs);
+            (handlers.stub ?? defaultStub)('build', options.extraArgs);
         });
 
-    for (const name of ["create", "preview", "check", "test", "generate"] as const) {
+    for (const name of ['create', 'preview', 'check', 'test', 'generate'] as const) {
         program
             .command(name)
             .description(`${name} (skeleton)`)
@@ -94,7 +91,7 @@ export function createWaeProgram(handlers: WaeCommandHandlers = {}): Command {
 }
 
 function defaultStub(cmd: string, args: string[]): void {
-    console.log(`wae ${cmd} ${args.join(" ")}（尚未接线）`.trim());
+    console.log(`wae ${cmd} ${args.join(' ')}（尚未接线）`.trim());
 }
 
 export function readRunOptions(cmd: Command): WaeRunOptions {
@@ -125,5 +122,5 @@ export function readBuildOptions(cmd: Command): WaeBuildOptions {
 /** Parse argv with the WAE command tree. */
 export async function runWaeCli(argv: string[], handlers: WaeCommandHandlers): Promise<void> {
     const program = createWaeProgram(handlers);
-    await program.parseAsync(["node", "wae", ...argv]);
+    await program.parseAsync(['node', 'wae', ...argv]);
 }

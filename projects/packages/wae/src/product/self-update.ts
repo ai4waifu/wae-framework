@@ -1,12 +1,12 @@
 /** Product updater for `wae build` trees — loads the shipped `.node` from `lib/`. */
 
-import { createRequire } from "node:module";
+import { createRequire } from 'node:module';
 
-import type { ProductUpdateOptions, ProductUpdateStatus, WaeNativeAddon, WaeProductManifest } from "@wae/types";
+import type { ProductUpdateOptions, ProductUpdateStatus, WaeNativeAddon, WaeProductManifest } from '@wae/types';
 
-import { WAE_PRODUCT_MANIFEST } from "@wae/types";
+import { WAE_PRODUCT_MANIFEST } from '@wae/types';
 
-import { loadProductManifest, resolveNativeAbsolutePath } from "./manifest.js";
+import { loadProductManifest, resolveNativeAbsolutePath } from './manifest.js';
 
 function loadNativeAddon(nativePath: string): WaeNativeAddon {
     const req = createRequire(import.meta.url);

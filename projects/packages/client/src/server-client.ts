@@ -16,19 +16,19 @@ export type ServerClient = {
 
 export function createServerClient(options: ServerClientOptions): ServerClient {
     const fetchImpl = options.fetchImpl ?? globalThis.fetch.bind(globalThis);
-    const base = options.baseUrl.replace(/\/$/, "");
+    const base = options.baseUrl.replace(/\/$/, '');
 
     return {
         fetch(input, init) {
-            const url = typeof input === "string" && input.startsWith("/") ? `${base}${input}` : input;
+            const url = typeof input === 'string' && input.startsWith('/') ? `${base}${input}` : input;
             return fetchImpl(url, init);
         },
         action<Input, Output>(name: string): ServerAction<Input, Output> {
             return {
                 async execute(input: Input) {
                     const res = await fetchImpl(`${base}/__wae/action/${name}`, {
-                        method: "POST",
-                        headers: { "content-type": "application/json" },
+                        method: 'POST',
+                        headers: { 'content-type': 'application/json' },
                         body: JSON.stringify(input ?? null),
                     });
                     if (!res.ok) {

@@ -1,16 +1,16 @@
 /** `wae build` — produce the shipped product tree + `wae-product.json`. */
 
-import { spawn } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
-import { createRequire } from "node:module";
-import type { WaeBuildOptions } from "@wae/commander";
-import type { ClientPlatformId } from "@wae/types";
-import type { WaeConfig } from "../index.js";
-import { resolveProductMeta, writeProductManifest } from "../product/manifest.js";
-import { loadWaeConfig } from "./load-config.js";
-import { isNativeShellPlatform, platformPackageName, resolvePlatformId } from "./platform.js";
-import { hasViteConfig, loadFrameworkPlugins, resolveVite } from "./vite-helpers.js";
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import type { WaeBuildOptions } from '@wae/commander';
+import type { ClientPlatformId } from '@wae/types';
+import type { WaeConfig } from '../index.js';
+import { resolveProductMeta, writeProductManifest } from '../product/manifest.js';
+import { loadWaeConfig } from './load-config.js';
+import { isNativeShellPlatform, platformPackageName, resolvePlatformId } from './platform.js';
+import { hasViteConfig, loadFrameworkPlugins, resolveVite } from './vite-helpers.js';
 
 export async function cmdBuild(flags: WaeBuildOptions): Promise<void> {
     const cwd = process.cwd();
@@ -18,7 +18,7 @@ export async function cmdBuild(flags: WaeBuildOptions): Promise<void> {
     const platformId = resolvePlatformId(flags, config);
     const meta = resolveProductMeta(cwd, config, platformId);
 
-    const baseOut = flags.outDir ?? config.product?.outDir ?? "dist";
+    const baseOut = flags.outDir ?? config.product?.outDir ?? 'dist';
     const outDir = path.resolve(cwd, baseOut, platformId);
     fs.mkdirSync(outDir, { recursive: true });
 
@@ -47,13 +47,13 @@ export async function cmdBuild(flags: WaeBuildOptions): Promise<void> {
 }
 
 async function buildFrontend(cwd: string, config: WaeConfig, frontendOut: string): Promise<void> {
-    const bundler = config.frontend?.bundler ?? "vite";
-    if (bundler === "custom") {
-        console.log("[wae build] frontend.bundler=custom — skip frontend build");
+    const bundler = config.frontend?.bundler ?? 'vite';
+    if (bundler === 'custom') {
+        console.log('[wae build] frontend.bundler=custom — skip frontend build');
         return;
     }
 
-    const framework = config.frontend?.framework ?? "none";
+    const framework = config.frontend?.framework ?? 'none';
     const vite = await resolveVite(cwd);
     const plugins = hasViteConfig(cwd) ? undefined : await loadFrameworkPlugins(framework, cwd);
 
@@ -66,33 +66,29 @@ async function buildFrontend(cwd: string, config: WaeConfig, frontendOut: string
             outDir: frontendOut,
             emptyOutDir: true,
         },
-        logLevel: "info",
+        logLevel: 'info',
     });
     console.log(`[wae build] frontend → ${path.relative(cwd, frontendOut) || frontendOut}`);
 }
 
 async function ensureNativeAddon(cwd: string, platformId: ClientPlatformId, destPath: string): Promise<void> {
     const pkg = platformPackageName(platformId);
-    const req = createRequire(path.join(cwd, "package.json"));
+    const req = createRequire(path.join(cwd, 'package.json'));
     let platformRoot: string;
     try {
         platformRoot = path.dirname(req.resolve(`${pkg}/package.json`));
     } catch {
-        throw new Error(
-            `desktop/mobile build 需要 ${pkg}。请安装 @wae/wae（optionalDependencies 会按 os/cpu 拉取平台包）。`,
-        );
+        throw new Error(`desktop/mobile build 需要 ${pkg}。请安装 @wae/wae（optionalDependencies 会按 os/cpu 拉取平台包）。`);
     }
 
     const libName = path.basename(destPath);
-    const built = path.join(platformRoot, "lib", libName);
+    const built = path.join(platformRoot, 'lib', libName);
     if (!fs.existsSync(built)) {
         console.log(`[wae build] ${pkg} lib/${libName} missing — running build:native …`);
-        await runPackageScript(platformRoot, "build:native");
+        await runPackageScript(platformRoot, 'build:native');
     }
     if (!fs.existsSync(built)) {
-        throw new Error(
-            `未找到 lib/${libName}。请在 WAE 仓库执行 pnpm run build:native，或确保 ${pkg} 发布包内含 lib/。`,
-        );
+        throw new Error(`未找到 lib/${libName}。请在 WAE 仓库执行 pnpm run build:native，或确保 ${pkg} 发布包内含 lib/。`);
     }
 
     fs.mkdirSync(path.dirname(destPath), { recursive: true });
@@ -101,23 +97,23 @@ async function ensureNativeAddon(cwd: string, platformId: ClientPlatformId, dest
 }
 
 function runPackageScript(packageRoot: string, script: string): Promise<void> {
-    const pkgPath = path.join(packageRoot, "package.json");
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8")) as { scripts?: Record<string, string> };
+    const pkgPath = path.join(packageRoot, 'package.json');
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as { scripts?: Record<string, string> };
     if (!pkg.scripts?.[script]) {
         return Promise.reject(new Error(`${path.basename(packageRoot)} 缺少 script ${script}`));
     }
-    const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
+    const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
     return new Promise((resolve, reject) => {
-        const child = spawn(npmCmd, ["run", script], {
+        const child = spawn(npmCmd, ['run', script], {
             cwd: packageRoot,
-            stdio: "inherit",
+            stdio: 'inherit',
             shell: false,
             windowsHide: true,
         });
-        child.on("error", reject);
-        child.on("exit", (code) => {
+        child.on('error', reject);
+        child.on('exit', (code) => {
             if (code === 0) resolve();
-            else reject(new Error(`npm run ${script} exited with ${code ?? "unknown"}`));
+            else reject(new Error(`npm run ${script} exited with ${code ?? 'unknown'}`));
         });
     });
 }

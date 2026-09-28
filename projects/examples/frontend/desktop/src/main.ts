@@ -1,4 +1,4 @@
-import { createClient } from "@wae/client";
+import { createClient } from '@wae/client';
 
-const client = createClient({ server: { baseUrl: "/api" } });
+const client = createClient({ server: { baseUrl: '/api' } });
 void client;

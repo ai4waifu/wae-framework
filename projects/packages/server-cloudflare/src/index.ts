@@ -1,7 +1,7 @@
 /** @wae/server-cloudflare — Workers 适配（经 @wae/serverless）。 */
 
-import type { WaeServerApp } from "@wae/server";
-import { adaptFetch } from "@wae/serverless";
+import type { WaeServerApp } from '@wae/server';
+import { adaptFetch } from '@wae/serverless';
 
 export type CloudflareExecutionContext = {
     waitUntil(promise: Promise<unknown>): void;

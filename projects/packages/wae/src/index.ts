@@ -6,39 +6,25 @@ import type {
     WaeProductManifest,
     WaeProductUpdateChannel,
     WaeProductUpdateConfig,
-} from "@wae/types";
+} from '@wae/types';
 
-export type {
-    ClientPlatformId,
-    WaeProductDownloadPolicy,
-    WaeProductManifest,
-    WaeProductUpdateChannel,
-    WaeProductUpdateConfig,
-};
-export { WAE_PRODUCT_MANIFEST } from "@wae/types";
-export {
-    loadProductManifest,
-    resolveNativeAbsolutePath,
-    type ResolvedProductMeta,
-} from "./product/manifest.js";
-export {
-    applyProductUpdateFromManifest,
-    checkProductUpdateFromManifest,
-    downloadProductUpdateFromManifest,
-} from "./product/self-update.js";
+export { WAE_PRODUCT_MANIFEST } from '@wae/types';
+export { loadProductManifest, type ResolvedProductMeta, resolveNativeAbsolutePath } from './product/manifest.js';
+export { applyProductUpdateFromManifest, checkProductUpdateFromManifest, downloadProductUpdateFromManifest } from './product/self-update.js';
+export type { ClientPlatformId, WaeProductDownloadPolicy, WaeProductManifest, WaeProductUpdateChannel, WaeProductUpdateConfig };
 
-export type ServerAdapterId = "node" | "deno" | "cloudflare" | "bun";
+export type ServerAdapterId = 'node' | 'deno' | 'cloudflare' | 'bun';
 
-export type FrontendFramework = "vue" | "react" | "svelte" | "solid" | "none";
+export type FrontendFramework = 'vue' | 'react' | 'svelte' | 'solid' | 'none';
 
 /**
  * 前端打包 / 开发服务器工具链。
  * - `vite`：常用默认；`wae run`（web）会代启 Vite。
  * - `custom`：自备 Webpack / Rspack / Parcel 等；`wae` 不代启 bundler。
  */
-export type FrontendBundler = "vite" | "custom";
+export type FrontendBundler = 'vite' | 'custom';
 
-export type RuntimeTarget = "web" | "desktop" | "mobile";
+export type RuntimeTarget = 'web' | 'desktop' | 'mobile';
 
 export type FrontendAdapterFactory = {
     name: string;
@@ -100,14 +86,14 @@ export type WaeConfig = {
 export function defineConfig(config: WaeConfig): WaeConfig {
     return {
         frontend: {
-            framework: config.frontend?.framework ?? "none",
+            framework: config.frontend?.framework ?? 'none',
             adapter: config.frontend?.adapter,
             entry: config.frontend?.entry,
-            bundler: config.frontend?.bundler ?? "vite",
+            bundler: config.frontend?.bundler ?? 'vite',
             devUrl: config.frontend?.devUrl,
         },
         server: config.server,
-        target: config.target ?? "web",
+        target: config.target ?? 'web',
         platform: config.platform,
         product: config.product
             ? {

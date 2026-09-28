@@ -1,13 +1,13 @@
-import react from "@wae/adapter-react";
-import { defineConfig } from "@wae/wae";
+import react from '@wae/adapter-react';
+import { defineConfig } from '@wae/wae';
 
 export default defineConfig({
     frontend: {
-        framework: "react",
+        framework: 'react',
         adapter: react(),
-        entry: "./src/main.tsx",
-        bundler: "vite",
+        entry: './src/main.tsx',
+        bundler: 'vite',
     },
-    target: "desktop",
-    platform: { client: "win32-x64" },
+    target: 'desktop',
+    platform: { client: 'win32-x64' },
 });

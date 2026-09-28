@@ -17,14 +17,14 @@ export type WaeApp = {
 };
 
 export interface WaePlatform {
-    readonly id: "unknown-wasm32";
+    readonly id: 'unknown-wasm32';
     start(options: StartOptions): Promise<WaeApp>;
     build(options: BuildOptions): Promise<void>;
     run(options: RunOptions): Promise<void>;
 }
 
 export const platform: WaePlatform = {
-    id: "unknown-wasm32",
+    id: 'unknown-wasm32',
     async start(_options) {
         return {
             async close() {},

@@ -1,5 +1,5 @@
-import { createContext, createElement, useContext, type ReactNode } from "react";
-import type { WaeClient } from "@wae/client";
+import type { WaeClient } from '@wae/client';
+import { createContext, createElement, type ReactNode, useContext } from 'react';
 
 const WaeContext = createContext<WaeClient | null>(null);
 
@@ -15,12 +15,12 @@ export function WaeProvider(props: WaeProviderProps) {
 export function useWae(): WaeClient {
     const client = useContext(WaeContext);
     if (!client) {
-        throw new Error("useWae() 需要包裹在 <WaeProvider client={…}> 内");
+        throw new Error('useWae() 需要包裹在 <WaeProvider client={…}> 内');
     }
     return client;
 }
 
 /** 供 defineConfig({ frontend: { adapter: react() } }) 使用 */
-export default function react(): { name: "react" } {
-    return { name: "react" };
+export default function react(): { name: 'react' } {
+    return { name: 'react' };
 }

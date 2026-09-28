@@ -1,52 +1,52 @@
 /** Shared native addon paths for `@wae/wae-*` platform shells. */
 
 export const PLATFORM_NATIVE = {
-    "win32-x64": {
-        dir: "wae-win32-x64",
-        lib: "win32-x64-msvc.node",
-        triple: "x86_64-pc-windows-msvc",
-        ciOs: "windows-latest",
+    'win32-x64': {
+        dir: 'wae-win32-x64',
+        lib: 'win32-x64-msvc.node',
+        triple: 'x86_64-pc-windows-msvc',
+        ciOs: 'windows-latest',
     },
-    "win32-arm64": {
-        dir: "wae-win32-arm64",
-        lib: "win32-arm64-msvc.node",
-        triple: "aarch64-pc-windows-msvc",
-        ciOs: "windows-latest",
+    'win32-arm64': {
+        dir: 'wae-win32-arm64',
+        lib: 'win32-arm64-msvc.node',
+        triple: 'aarch64-pc-windows-msvc',
+        ciOs: 'windows-latest',
     },
-    "darwin-x64": {
-        dir: "wae-darwin-x64",
-        lib: "darwin-x64.node",
-        triple: "x86_64-apple-darwin",
-        ciOs: "macos-latest",
+    'darwin-x64': {
+        dir: 'wae-darwin-x64',
+        lib: 'darwin-x64.node',
+        triple: 'x86_64-apple-darwin',
+        ciOs: 'macos-latest',
     },
-    "darwin-arm64": {
-        dir: "wae-darwin-arm64",
-        lib: "darwin-arm64.node",
-        triple: "aarch64-apple-darwin",
-        ciOs: "macos-latest",
+    'darwin-arm64': {
+        dir: 'wae-darwin-arm64',
+        lib: 'darwin-arm64.node',
+        triple: 'aarch64-apple-darwin',
+        ciOs: 'macos-latest',
     },
-    "linux-x64": {
-        dir: "wae-linux-x64",
-        lib: "linux-x64-gnu.node",
-        triple: "x86_64-unknown-linux-gnu",
-        ciOs: "ubuntu-latest",
+    'linux-x64': {
+        dir: 'wae-linux-x64',
+        lib: 'linux-x64-gnu.node',
+        triple: 'x86_64-unknown-linux-gnu',
+        ciOs: 'ubuntu-latest',
     },
-    "linux-arm64": {
-        dir: "wae-linux-arm64",
-        lib: "linux-arm64-gnu.node",
-        triple: "aarch64-unknown-linux-gnu",
-        ciOs: "ubuntu-latest",
+    'linux-arm64': {
+        dir: 'wae-linux-arm64',
+        lib: 'linux-arm64-gnu.node',
+        triple: 'aarch64-unknown-linux-gnu',
+        ciOs: 'ubuntu-latest',
     },
-    "android-arm64": {
-        dir: "wae-android-arm64",
-        lib: "android-arm64.node",
-        triple: "aarch64-linux-android",
+    'android-arm64': {
+        dir: 'wae-android-arm64',
+        lib: 'android-arm64.node',
+        triple: 'aarch64-linux-android',
         ciOs: null,
     },
-    "ios-arm64": {
-        dir: "wae-ios-arm64",
-        lib: "ios-arm64.node",
-        triple: "aarch64-apple-ios",
+    'ios-arm64': {
+        dir: 'wae-ios-arm64',
+        lib: 'ios-arm64.node',
+        triple: 'aarch64-apple-ios',
         ciOs: null,
     },
 };

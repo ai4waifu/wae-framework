@@ -1,11 +1,10 @@
 /** `wae-product.json` helpers (build + runtime). */
 
-import fs from "node:fs";
-import path from "node:path";
-import type { ClientPlatformId, WaeProductManifest } from "@wae/types";
-import { isNativeShellPlatform, platformNativeLibFile } from "@wae/types";
-import { WAE_PRODUCT_MANIFEST } from "@wae/types";
-import type { WaeConfig } from "../index.js";
+import fs from 'node:fs';
+import path from 'node:path';
+import type { ClientPlatformId, WaeProductManifest } from '@wae/types';
+import { isNativeShellPlatform, platformNativeLibFile, WAE_PRODUCT_MANIFEST } from '@wae/types';
+import type { WaeConfig } from '../index.js';
 
 export { WAE_PRODUCT_MANIFEST };
 
@@ -17,9 +16,9 @@ export type ResolvedProductMeta = {
 };
 
 export function readPackageJson(cwd: string): { name?: string; version?: string } {
-    const pkgPath = path.join(cwd, "package.json");
+    const pkgPath = path.join(cwd, 'package.json');
     if (!fs.existsSync(pkgPath)) return {};
-    return JSON.parse(fs.readFileSync(pkgPath, "utf8")) as { name?: string; version?: string };
+    return JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as { name?: string; version?: string };
 }
 
 export function resolveProductMeta(cwd: string, config: WaeConfig, platform?: ClientPlatformId): ResolvedProductMeta {
@@ -27,18 +26,17 @@ export function resolveProductMeta(cwd: string, config: WaeConfig, platform?: Cl
     const name = config.product?.name ?? pkg.name;
     const version = config.product?.version ?? pkg.version;
     if (!name) {
-        throw new Error("product.name 未设置，且 package.json 缺少 name");
+        throw new Error('product.name 未设置，且 package.json 缺少 name');
     }
-    const resolvedVersion = version ?? "0.0.0";
-    const nativeDir = config.product?.native?.dir ?? "lib";
+    const resolvedVersion = version ?? '0.0.0';
+    const nativeDir = config.product?.native?.dir ?? 'lib';
     const nativeFile =
-        config.product?.native?.fileName ??
-        (platform && isNativeShellPlatform(platform) ? platformNativeLibFile(platform) : "wae-napi.node");
+        config.product?.native?.fileName ?? (platform && isNativeShellPlatform(platform) ? platformNativeLibFile(platform) : 'wae-napi.node');
     return {
         name,
         version: resolvedVersion,
-        nativeRelativePath: path.join(nativeDir, nativeFile).replaceAll("\\", "/"),
-        frontendDir: config.product?.frontendDir ?? "frontend",
+        nativeRelativePath: path.join(nativeDir, nativeFile).replaceAll('\\', '/'),
+        frontendDir: config.product?.frontendDir ?? 'frontend',
     };
 }
 
@@ -61,7 +59,7 @@ export function writeProductManifest(
         manifest.nativePath = meta.nativeRelativePath;
     }
     const manifestPath = path.join(outDir, WAE_PRODUCT_MANIFEST);
-    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 4)}\n`, "utf8");
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 4)}\n`, 'utf8');
     return manifestPath;
 }
 
@@ -70,7 +68,7 @@ export function loadProductManifest(productRoot: string): WaeProductManifest {
     if (!fs.existsSync(manifestPath)) {
         throw new Error(`missing ${WAE_PRODUCT_MANIFEST} under ${productRoot}`);
     }
-    const raw = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as WaeProductManifest;
+    const raw = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as WaeProductManifest;
     if (raw.schemaVersion !== 1) {
         throw new Error(`unsupported ${WAE_PRODUCT_MANIFEST} schemaVersion ${raw.schemaVersion}`);
     }

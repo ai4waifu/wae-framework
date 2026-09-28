@@ -34,11 +34,9 @@ export type WaeContext<Env = unknown, Services = Record<string, unknown>> = {
     platform?: Record<string, unknown>;
 };
 
-export type RouteHandler<Env = unknown, Services = Record<string, unknown>> = (
-    ctx: WaeContext<Env, Services>,
-) => Promise<Response> | Response;
+export type RouteHandler<Env = unknown, Services = Record<string, unknown>> = (ctx: WaeContext<Env, Services>) => Promise<Response> | Response;
 
-export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS" | "*";
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS' | '*';
 
 export type Route<Env = unknown, Services = Record<string, unknown>> = {
     method: HttpMethod;
@@ -56,8 +54,8 @@ export function route<Env = unknown, Services = Record<string, unknown>>(
     handler: RouteHandler<Env, Services>,
 ): Route<Env, Services>;
 export function route(methodOrPath: string, pathOrHandler: string | RouteHandler, maybeHandler?: RouteHandler): Route {
-    if (typeof pathOrHandler === "function") {
-        return { method: "*", path: methodOrPath, handler: pathOrHandler };
+    if (typeof pathOrHandler === 'function') {
+        return { method: '*', path: methodOrPath, handler: pathOrHandler };
     }
     return {
         method: methodOrPath as HttpMethod,
@@ -73,23 +71,19 @@ export type CreateServerOptions<Env = unknown, Services = Record<string, unknown
 };
 
 export interface WaeServerApp<Env = unknown, Services = Record<string, unknown>> {
-    fetch(
-        request: Request,
-        context?: WaeRequestContext<Env, Services> | Env,
-        execution?: WaeExecutionContext,
-    ): Promise<Response>;
+    fetch(request: Request, context?: WaeRequestContext<Env, Services> | Env, execution?: WaeExecutionContext): Promise<Response>;
 }
 
 function matchPath(pattern: string, pathname: string): Record<string, string> | null {
     if (pattern === pathname) return {};
-    const patternParts = pattern.split("/").filter(Boolean);
-    const pathParts = pathname.split("/").filter(Boolean);
+    const patternParts = pattern.split('/').filter(Boolean);
+    const pathParts = pathname.split('/').filter(Boolean);
     if (patternParts.length !== pathParts.length) return null;
     const params: Record<string, string> = {};
     for (let i = 0; i < patternParts.length; i++) {
         const pp = patternParts[i]!;
         const vp = pathParts[i]!;
-        if (pp.startsWith(":")) {
+        if (pp.startsWith(':')) {
             params[pp.slice(1)] = decodeURIComponent(vp);
             continue;
         }
@@ -130,7 +124,7 @@ function createContext<Env, Services>(
             return new Response(data, {
                 ...init,
                 headers: {
-                    "content-type": "text/plain; charset=utf-8",
+                    'content-type': 'text/plain; charset=utf-8',
                     ...(init?.headers ?? {}),
                 },
             });
@@ -152,12 +146,12 @@ export function createServer<Env = unknown, Services extends Record<string, unkn
             let platform: Record<string, unknown> | undefined;
             let signal = request.signal;
 
-            if (contextOrEnv && typeof contextOrEnv === "object" && "env" in (contextOrEnv as object)) {
+            if (contextOrEnv && typeof contextOrEnv === 'object' && 'env' in (contextOrEnv as object)) {
                 const ctx = contextOrEnv as WaeRequestContext<Env, Services>;
                 env = ctx.env;
                 services =
                     ctx.services ??
-                    (typeof options.services === "function"
+                    (typeof options.services === 'function'
                         ? (options.services as (e: Env) => Services)(env)
                         : ((options.services as Services | undefined) ?? ({} as Services)));
                 exec = ctx.execution ?? execution;
@@ -166,7 +160,7 @@ export function createServer<Env = unknown, Services extends Record<string, unkn
             } else {
                 env = contextOrEnv as Env;
                 services =
-                    typeof options.services === "function"
+                    typeof options.services === 'function'
                         ? (options.services as (e: Env) => Services)(env)
                         : ((options.services as Services | undefined) ?? ({} as Services));
             }
@@ -177,7 +171,7 @@ export function createServer<Env = unknown, Services extends Record<string, unkn
             let params: Record<string, string> = {};
 
             for (const candidate of routes) {
-                if (candidate.method !== "*" && candidate.method !== method) continue;
+                if (candidate.method !== '*' && candidate.method !== method) continue;
                 const found = matchPath(candidate.path, url.pathname);
                 if (found) {
                     matched = candidate;
@@ -190,14 +184,14 @@ export function createServer<Env = unknown, Services extends Record<string, unkn
 
             const runHandler = async (): Promise<Response> => {
                 if (!matched) {
-                    return new Response("Not Found", { status: 404 });
+                    return new Response('Not Found', { status: 404 });
                 }
                 return matched.handler(ctx);
             };
 
             let index = -1;
             const dispatch = async (i: number): Promise<Response> => {
-                if (i <= index) throw new Error("next() called multiple times");
+                if (i <= index) throw new Error('next() called multiple times');
                 index = i;
                 const layer = middleware[i];
                 if (!layer) return runHandler();

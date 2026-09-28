@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /** Generate `src/index.ts` with inline `loadNative()` for each `@wae/wae-*` shell. */
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { PLATFORM_NATIVE } from "./platform-native-manifest.mjs";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { PLATFORM_NATIVE } from './platform-native-manifest.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const SHELLS = Object.entries(PLATFORM_NATIVE).map(([id, meta]) => ({
     dir: meta.dir,
     id,
     libFile: meta.lib,
-    windowsFallback: id.startsWith("win32-"),
+    windowsFallback: id.startsWith('win32-'),
 }));
 
 function spawnFallbackBlock() {
@@ -84,8 +84,8 @@ function indexTs({ id, dir, libFile, windowsFallback }) {
         ? `import { spawn } from "node:child_process";
 import fs from "node:fs";
 `
-        : "";
-    const spawnFns = windowsFallback ? spawnFallbackBlock() : "";
+        : '';
+    const spawnFns = windowsFallback ? spawnFallbackBlock() : '';
 
     const runBody = windowsFallback
         ? `    const native = loadNative();
@@ -184,17 +184,17 @@ export default platform;
 }
 
 for (const shell of SHELLS) {
-    const pkgRoot = path.join(ROOT, "projects/packages", shell.dir);
-    const src = path.join(pkgRoot, "src");
-    fs.mkdirSync(path.join(pkgRoot, "lib"), { recursive: true });
-    const gitkeep = path.join(pkgRoot, "lib", ".gitkeep");
-    if (!fs.existsSync(gitkeep)) fs.writeFileSync(gitkeep, "", "utf8");
+    const pkgRoot = path.join(ROOT, 'projects/packages', shell.dir);
+    const src = path.join(pkgRoot, 'src');
+    fs.mkdirSync(path.join(pkgRoot, 'lib'), { recursive: true });
+    const gitkeep = path.join(pkgRoot, 'lib', '.gitkeep');
+    if (!fs.existsSync(gitkeep)) fs.writeFileSync(gitkeep, '', 'utf8');
 
-    for (const stale of ["native-loader.ts", "desktop-run.ts"]) {
+    for (const stale of ['native-loader.ts', 'desktop-run.ts']) {
         const p = path.join(src, stale);
         if (fs.existsSync(p)) fs.rmSync(p);
     }
 
-    fs.writeFileSync(path.join(src, "index.ts"), indexTs(shell), "utf8");
+    fs.writeFileSync(path.join(src, 'index.ts'), indexTs(shell), 'utf8');
     console.log(`synced ${shell.dir}/src/index.ts → lib/${shell.libFile}`);
 }

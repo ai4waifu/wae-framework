@@ -4,34 +4,30 @@
  */
 
 export type {
-    ClientPlatformId,
-    WaeProductDownloadPolicy,
-    WaeProductManifest,
-    WaeProductUpdateChannel,
-    WaeProductUpdateConfig,
-} from "./product.js";
-export { WAE_PRODUCT_MANIFEST } from "./product.js";
-export type { NativeShellPlatformId } from "./platform-native.js";
-export {
-    PLATFORM_NATIVE_LIB_FILE,
-    isNativeShellPlatform,
-    platformNativeLibFile,
-} from "./platform-native.js";
-export type {
     OpenDesktopOptions,
     ProductDownloadPolicy,
     ProductUpdateChannel,
     ProductUpdateOptions,
     ProductUpdateStatus,
     WaeNativeAddon,
-} from "./native.js";
+} from './native.js';
+export type { NativeShellPlatformId } from './platform-native.js';
+export { isNativeShellPlatform, PLATFORM_NATIVE_LIB_FILE, platformNativeLibFile } from './platform-native.js';
+export type {
+    ClientPlatformId,
+    WaeProductDownloadPolicy,
+    WaeProductManifest,
+    WaeProductUpdateChannel,
+    WaeProductUpdateConfig,
+} from './product.js';
+export { WAE_PRODUCT_MANIFEST } from './product.js';
 
 export type NodeId = string;
 export type RequestId = string;
 export type RouteId = string;
 export type SessionId = string;
 
-export type ErrorCode = "Unknown" | "InvalidRequest" | "Unauthorized" | "NotFound" | "Conflict" | "Internal";
+export type ErrorCode = 'Unknown' | 'InvalidRequest' | 'Unauthorized' | 'NotFound' | 'Conflict' | 'Internal';
 
 export type WaeError = {
     code: ErrorCode | number;
@@ -40,13 +36,13 @@ export type WaeError = {
 };
 
 export type DomPatch =
-    | { op: "createElement"; id: string; tag: string; parent: string | null }
-    | { op: "removeNode"; id: string }
-    | { op: "setAttribute"; id: string; name: string; value: string | null }
-    | { op: "setProperty"; id: string; name: string; value: unknown }
-    | { op: "setText"; id: string; text: string }
-    | { op: "insertChild"; parent: string; child: string; index: number }
-    | { op: "removeChild"; parent: string; child: string };
+    | { op: 'createElement'; id: string; tag: string; parent: string | null }
+    | { op: 'removeNode'; id: string }
+    | { op: 'setAttribute'; id: string; name: string; value: string | null }
+    | { op: 'setProperty'; id: string; name: string; value: unknown }
+    | { op: 'setText'; id: string; text: string }
+    | { op: 'insertChild'; parent: string; child: string; index: number }
+    | { op: 'removeChild'; parent: string; child: string };
 
 export type UiEvent = {
     kind: string;
@@ -67,6 +63,6 @@ export type RpcResponse = {
 };
 
 export type HostMessage =
-    | { type: "domPatch"; patches: DomPatch[] }
-    | { type: "rpc"; response: RpcResponse }
-    | { type: "error"; error: WaeError };
+    | { type: 'domPatch'; patches: DomPatch[] }
+    | { type: 'rpc'; response: RpcResponse }
+    | { type: 'error'; error: WaeError };

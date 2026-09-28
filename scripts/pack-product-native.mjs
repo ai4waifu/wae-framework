@@ -12,17 +12,17 @@
 
  */
 
-import { spawnSync } from "node:child_process";
+import { spawnSync } from 'node:child_process';
 
-import fs from "node:fs";
+import fs from 'node:fs';
 
-import path from "node:path";
+import path from 'node:path';
 
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from 'node:url';
 
-import { PLATFORM_NATIVE, libFileName } from "./platform-native-manifest.mjs";
+import { libFileName, PLATFORM_NATIVE } from './platform-native-manifest.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function arg(name) {
     const i = process.argv.indexOf(name);
@@ -30,42 +30,39 @@ function arg(name) {
     return i >= 0 ? process.argv[i + 1] : undefined;
 }
 
-let product = arg("--product");
+let product = arg('--product');
 
-const manifestPath = arg("--manifest");
+const manifestPath = arg('--manifest');
 
 if (manifestPath) {
-    const manifest = JSON.parse(fs.readFileSync(path.resolve(manifestPath), "utf8"));
+    const manifest = JSON.parse(fs.readFileSync(path.resolve(manifestPath), 'utf8'));
 
     product = manifest.name;
 
     if (!product) {
-        console.error("pack-product-native: manifest missing name");
+        console.error('pack-product-native: manifest missing name');
 
         process.exit(1);
     }
 }
 
 if (!product) {
-    console.error(
-        "pack-product-native: pass --product <slug> or --manifest dist/<platform>/wae-product.json",
-    );
+    console.error('pack-product-native: pass --product <slug> or --manifest dist/<platform>/wae-product.json');
 
     process.exit(1);
 }
 
-const outArg = process.argv.indexOf("--out");
+const outArg = process.argv.indexOf('--out');
 
-const OUT_DIR =
-    outArg >= 0 ? path.resolve(ROOT, process.argv[outArg + 1] ?? "dist-release") : path.join(ROOT, "dist-release");
+const OUT_DIR = outArg >= 0 ? path.resolve(ROOT, process.argv[outArg + 1] ?? 'dist-release') : path.join(ROOT, 'dist-release');
 
 function run(command, args, cwd = ROOT) {
     const result = spawnSync(command, args, {
         cwd,
 
-        stdio: "inherit",
+        stdio: 'inherit',
 
-        shell: process.platform === "win32",
+        shell: process.platform === 'win32',
 
         windowsHide: true,
     });
@@ -74,23 +71,23 @@ function run(command, args, cwd = ROOT) {
 }
 
 function hostTriple() {
-    const rustc = spawnSync("rustc", ["-vV"], { encoding: "utf8" });
+    const rustc = spawnSync('rustc', ['-vV'], { encoding: 'utf8' });
 
     if (rustc.status !== 0) {
-        console.error("pack-product-native: rustc -vV failed");
+        console.error('pack-product-native: rustc -vV failed');
 
         process.exit(1);
     }
 
-    const line = rustc.stdout.split(/\r?\n/).find((l) => l.startsWith("host: "));
+    const line = rustc.stdout.split(/\r?\n/).find((l) => l.startsWith('host: '));
 
     if (!line) {
-        console.error("pack-product-native: could not read rustc host triple");
+        console.error('pack-product-native: could not read rustc host triple');
 
         process.exit(1);
     }
 
-    return line.slice("host: ".length).trim();
+    return line.slice('host: '.length).trim();
 }
 
 const triple = hostTriple();
@@ -105,13 +102,13 @@ if (!platformId) {
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
-run(process.execPath, ["scripts/build-platform-native.mjs", "--platform", platformId], ROOT);
+run(process.execPath, ['scripts/build-platform-native.mjs', '--platform', platformId], ROOT);
 
 const { dir } = PLATFORM_NATIVE[platformId];
 
 const libFile = libFileName(platformId);
 
-const nodePath = path.join(ROOT, "projects/packages", dir, "lib", libFile);
+const nodePath = path.join(ROOT, 'projects/packages', dir, 'lib', libFile);
 
 if (!fs.existsSync(nodePath)) {
     console.error(`pack-product-native: missing ${nodePath}`);
@@ -119,7 +116,7 @@ if (!fs.existsSync(nodePath)) {
     process.exit(1);
 }
 
-const stage = fs.mkdtempSync(path.join(OUT_DIR, "stage-"));
+const stage = fs.mkdtempSync(path.join(OUT_DIR, 'stage-'));
 
 fs.copyFileSync(nodePath, path.join(stage, libFile));
 
@@ -127,7 +124,7 @@ const archive = path.join(OUT_DIR, `${product}-${triple}.zip`);
 
 if (fs.existsSync(archive)) fs.rmSync(archive);
 
-run("tar", ["-a", "-c", "-f", archive, libFile], stage);
+run('tar', ['-a', '-c', '-f', archive, libFile], stage);
 
 fs.rmSync(stage, { recursive: true, force: true });
 

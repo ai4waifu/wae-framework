@@ -1,14 +1,14 @@
 /** 与原生壳交互的稳定抽象（纯 TS；不 import Rust/WASM）。 */
 
 export type BridgeRequest =
-    | { type: "window.open"; payload: Record<string, unknown> }
-    | { type: "clipboard.read" }
-    | { type: "clipboard.write"; payload: { text: string } }
-    | { type: "fs.read"; payload: { path: string } };
+    | { type: 'window.open'; payload: Record<string, unknown> }
+    | { type: 'clipboard.read' }
+    | { type: 'clipboard.write'; payload: { text: string } }
+    | { type: 'fs.read'; payload: { path: string } };
 
 export type BridgeResponse =
-    | { type: "ok"; requestId: string; payload: unknown }
-    | { type: "error"; requestId: string; error: { message: string } };
+    | { type: 'ok'; requestId: string; payload: unknown }
+    | { type: 'error'; requestId: string; error: { message: string } };
 
 export interface NativeBridge {
     request<TResponse = unknown>(request: BridgeRequest): Promise<TResponse>;
@@ -18,7 +18,7 @@ export interface NativeBridge {
 export function createBrowserBridge(): NativeBridge {
     return {
         async request() {
-            throw new Error("native bridge unavailable in browser");
+            throw new Error('native bridge unavailable in browser');
         },
     };
 }
@@ -31,7 +31,7 @@ export function createNativeIpcBridge(transport: {
     void transport;
     return {
         async request() {
-            throw new Error("native IPC bridge skeleton");
+            throw new Error('native IPC bridge skeleton');
         },
     };
 }

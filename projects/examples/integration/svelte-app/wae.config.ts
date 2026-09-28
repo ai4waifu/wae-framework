@@ -1,13 +1,13 @@
-import svelte from "@wae/adapter-svelte";
-import { defineConfig } from "@wae/wae";
+import svelte from '@wae/adapter-svelte';
+import { defineConfig } from '@wae/wae';
 
 export default defineConfig({
     frontend: {
-        framework: "svelte",
+        framework: 'svelte',
         adapter: svelte(),
-        entry: "./src/main.ts",
-        bundler: "vite",
+        entry: './src/main.ts',
+        bundler: 'vite',
     },
-    target: "desktop",
-    platform: { client: "win32-x64" },
+    target: 'desktop',
+    platform: { client: 'win32-x64' },
 });

@@ -1,15 +1,15 @@
 /** @wae/wae-linux-arm64 — native host shell (lib/linux-arm64-gnu.node). */
 
-import { createRequire } from "node:module";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import type { WaeNativeAddon } from "@wae/types";
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { WaeNativeAddon } from '@wae/types';
 
-const PACKAGE_NAME = "@wae/wae-linux-arm64";
-const NATIVE_LIB = "linux-arm64-gnu.node";
+const PACKAGE_NAME = '@wae/wae-linux-arm64';
+const NATIVE_LIB = 'linux-arm64-gnu.node';
 
 const require = createRequire(import.meta.url);
-const nativePath = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "lib", NATIVE_LIB);
+const nativePath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'lib', NATIVE_LIB);
 
 let cachedNative: WaeNativeAddon | null | undefined;
 
@@ -53,17 +53,17 @@ export type WaeApp = {
 };
 
 export interface WaePlatform {
-    readonly id: "linux-arm64";
+    readonly id: 'linux-arm64';
     start(options: StartOptions): Promise<WaeApp>;
     build(options: BuildOptions): Promise<void>;
     run(options: RunOptions): Promise<void>;
 }
 
 export const platform: WaePlatform = {
-    id: "linux-arm64",
+    id: 'linux-arm64',
     async start(options) {
-        const url = options.url ?? "http://127.0.0.1:5173/";
-        const runPromise = runDesktop(url, "WAE");
+        const url = options.url ?? 'http://127.0.0.1:5173/';
+        const runPromise = runDesktop(url, 'WAE');
         return {
             async close() {
                 await runPromise.catch(() => {});
@@ -72,8 +72,8 @@ export const platform: WaePlatform = {
     },
     async build(_options) {},
     async run(options) {
-        const url = options.url ?? "http://127.0.0.1:5173/";
-        const title = options.title ?? "WAE Desktop";
+        const url = options.url ?? 'http://127.0.0.1:5173/';
+        const title = options.title ?? 'WAE Desktop';
         await runDesktop(url, title);
     },
 };

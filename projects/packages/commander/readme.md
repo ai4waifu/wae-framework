@@ -6,7 +6,9 @@ Reusable WAE CLI command tree built on [Commander.js](https://github.com/tj/comm
 - Does **not** import Vite, platform packages, or native addons
 - `@wae/wae` injects handlers (`run`, `stub`)
 
-**Product updates** are **not** a CLI concern: upgrade `@wae/wae` via npm. **Shipped apps** (`wae build` products) use the Rust [`wae-updater`](../../crates/wae-updater/readme.md) crate against **your app's** GitHub Releases (native `wae-napi` addon in `lib/`).
+**Product updates** are **not** a CLI concern: upgrade `@wae/wae` via npm. **Shipped apps** (`wae build` products) use
+the Rust [`wae-updater`](../../crates/wae-updater/readme.md) crate against **your app's** GitHub Releases (native
+`wae-napi` addon in `lib/`).
 
 ```ts
 import { runWaeCli } from "@wae/commander";

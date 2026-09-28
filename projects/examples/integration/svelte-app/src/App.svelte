@@ -1,6 +1,6 @@
 <script lang="ts">
-import { createClient } from "@wae/client";
 import { setWaeContext } from "@wae/adapter-svelte";
+import { createClient } from "@wae/client";
 import Panel from "./Panel.svelte";
 
 const client = createClient({ server: { baseUrl: "/api" } });

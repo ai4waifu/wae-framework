@@ -1,22 +1,22 @@
-import { spawn } from "node:child_process";
-import { platform } from "node:os";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { spawn } from 'node:child_process';
+import { platform } from 'node:os';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const projectRoot = join(__dirname, "..");
+const projectRoot = join(__dirname, '..');
 
-const isWindows = platform() === "win32";
+const isWindows = platform() === 'win32';
 const shell = !!isWindows;
 
 const colors = {
-    reset: "\x1b[0m",
-    red: "\x1b[31m",
-    green: "\x1b[32m",
-    yellow: "\x1b[33m",
-    blue: "\x1b[34m",
-    cyan: "\x1b[36m",
+    reset: '\x1b[0m',
+    red: '\x1b[31m',
+    green: '\x1b[32m',
+    yellow: '\x1b[33m',
+    blue: '\x1b[34m',
+    cyan: '\x1b[36m',
 };
 
 function log(color, message) {
@@ -28,11 +28,11 @@ function runCommand(command, args = [], options = {}) {
         const child = spawn(command, args, {
             cwd: projectRoot,
             shell,
-            stdio: "inherit",
+            stdio: 'inherit',
             ...options,
         });
 
-        child.on("close", (code) => {
+        child.on('close', (code) => {
             if (code === 0) {
                 resolve(code);
             } else {
@@ -40,7 +40,7 @@ function runCommand(command, args = [], options = {}) {
             }
         });
 
-        child.on("error", (err) => {
+        child.on('error', (err) => {
             reject(err);
         });
     });
@@ -48,81 +48,81 @@ function runCommand(command, args = [], options = {}) {
 
 function checkCommandExists(command) {
     return new Promise((resolve) => {
-        const child = spawn(command, ["--version"], {
+        const child = spawn(command, ['--version'], {
             cwd: projectRoot,
             shell,
-            stdio: "ignore",
+            stdio: 'ignore',
         });
 
-        child.on("close", (code) => {
+        child.on('close', (code) => {
             resolve(code === 0);
         });
 
-        child.on("error", () => {
+        child.on('error', () => {
             resolve(false);
         });
     });
 }
 
 async function installCargoLlvmCov() {
-    log("yellow", "cargo-llvm-cov 未安装，正在安装...");
-    await runCommand("cargo", ["install", "cargo-llvm-cov"]);
-    log("green", "cargo-llvm-cov 安装成功！");
+    log('yellow', 'cargo-llvm-cov 未安装，正在安装...');
+    await runCommand('cargo', ['install', 'cargo-llvm-cov']);
+    log('green', 'cargo-llvm-cov 安装成功！');
 }
 
 async function cleanCoverage() {
-    log("cyan", "清理旧的覆盖率数据...");
+    log('cyan', '清理旧的覆盖率数据...');
     try {
-        await runCommand("cargo", ["llvm-cov", "clean"]);
+        await runCommand('cargo', ['llvm-cov', 'clean']);
     } catch (_err) {
-        log("yellow", "清理失败，可能没有旧数据，继续执行");
+        log('yellow', '清理失败，可能没有旧数据，继续执行');
     }
 }
 
-async function runCoverage(outputType = "html", excludePackages = []) {
-    log("cyan", "生成覆盖率报告...");
+async function runCoverage(outputType = 'html', excludePackages = []) {
+    log('cyan', '生成覆盖率报告...');
 
-    const args = ["llvm-cov"];
+    const args = ['llvm-cov'];
 
-    if (outputType === "html") {
-        args.push("--html");
-    } else if (outputType === "json") {
-        args.push("--json");
-    } else if (outputType === "lcov") {
-        args.push("--lcov");
+    if (outputType === 'html') {
+        args.push('--html');
+    } else if (outputType === 'json') {
+        args.push('--json');
+    } else if (outputType === 'lcov') {
+        args.push('--lcov');
     }
 
-    args.push("--workspace");
+    args.push('--workspace');
 
     for (const pkg of excludePackages) {
-        args.push("--exclude", pkg);
+        args.push('--exclude', pkg);
     }
 
-    await runCommand("cargo", args);
+    await runCommand('cargo', args);
 }
 
 async function openReport(outputType) {
-    if (outputType === "html") {
-        log("cyan", "HTML 报告已生成在 target/llvm-cov/html/index.html");
+    if (outputType === 'html') {
+        log('cyan', 'HTML 报告已生成在 target/llvm-cov/html/index.html');
     }
 }
 
 async function main() {
-    log("blue", "\n╔══════════════════════════════════════════════════════════╗");
-    log("blue", "║               WAE 测试覆盖率报告生成器                        ║");
-    log("blue", "╚══════════════════════════════════════════════════════════╝\n");
+    log('blue', '\n╔══════════════════════════════════════════════════════════╗');
+    log('blue', '║               WAE 测试覆盖率报告生成器                        ║');
+    log('blue', '╚══════════════════════════════════════════════════════════╝\n');
 
     const args = process.argv.slice(2);
-    const outputType = args[0] || "html";
+    const outputType = args[0] || 'html';
 
     let excludePackages = [];
-    const excludeIndex = args.indexOf("--exclude");
+    const excludeIndex = args.indexOf('--exclude');
     if (excludeIndex !== -1 && args.length > excludeIndex + 1) {
-        excludePackages = args[excludeIndex + 1].split(",").map((p) => p.trim());
+        excludePackages = args[excludeIndex + 1].split(',').map((p) => p.trim());
     }
 
     try {
-        const hasLlvmCov = await checkCommandExists("cargo-llvm-cov");
+        const hasLlvmCov = await checkCommandExists('cargo-llvm-cov');
         if (!hasLlvmCov) {
             await installCargoLlvmCov();
         }
@@ -131,15 +131,15 @@ async function main() {
         await runCoverage(outputType, excludePackages);
         await openReport(outputType);
 
-        log("green", "\n✅ 覆盖率报告生成成功！\n");
+        log('green', '\n✅ 覆盖率报告生成成功！\n');
         process.exit(0);
     } catch (err) {
-        log("red", `\n❌ 错误: ${err.message}\n`);
+        log('red', `\n❌ 错误: ${err.message}\n`);
         process.exit(1);
     }
 }
 
 main().catch((err) => {
-    log("red", `\n致命错误: ${err.message}`);
+    log('red', `\n致命错误: ${err.message}`);
     process.exit(1);
 });
