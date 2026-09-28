@@ -1,6 +1,24 @@
-/** @wae/core — 共享 runtime。不含 DOM/JSX、HTTP app、协议编解码、视觉组件。 */
+/** @wae/core — 共享 runtime：跨宿主 HTTP app、工具函数；不含 DOM/JSX、协议编解码、视觉组件。 */
 
 import type { WaeError } from '@wae/types';
+
+export {
+    createApp,
+    createServer,
+    route,
+    type CreateAppOptions,
+    type CreateServerOptions,
+    type HttpMethod,
+    type JsonValue,
+    type Route,
+    type RouteHandler,
+    type WaeApp,
+    type WaeContext,
+    type WaeExecutionContext,
+    type WaeRequest,
+    type WaeRequestContext,
+    type WaeServerApp,
+} from './app.js';
 
 export function createRequestId(): string {
     return `req_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;

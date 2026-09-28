@@ -1,7 +1,7 @@
 {
     "name": "@wae/core",
     "version": "0.0.0",
-    "description": "WAE 共享 TypeScript runtime（跨 client/server；非 UI、非 HTTP）",
+    "description": "WAE 共享 TypeScript runtime（跨宿主 HTTP app、工具；非 UI、非协议编解码）",
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
