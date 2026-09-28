@@ -8,6 +8,7 @@ import { syncWorkerRoutes } from '@wae/serverless/cloudflare/routes';
 import { resolveDeployTarget } from './deploy-target.js';
 import { loadWaeConfig } from './load-config.js';
 import { loadPublishArtifact } from './publish-artifact.js';
+import { loadServerBundleArtifact, materializeServerPublish, serverPublishCommand } from './publish-server.js';
 import { resolveProductDir } from './resolve-product-dir.js';
 
 export function resolveCloudflareCredentials(config: {
@@ -28,11 +29,33 @@ export async function cmdPublish(options: WaePublishOptions): Promise<void> {
     const cwd = process.cwd();
     const { path: configPath, config } = await loadWaeConfig(cwd);
     const deployTarget = resolveDeployTarget(config);
-    if (deployTarget !== 'cloudflare') {
-        throw new Error(`wae publish requires deployTarget=cloudflare (got ${deployTarget ?? 'unset'})`);
+    if (!deployTarget) {
+        throw new Error('wae publish requires deployTarget in wae.config');
     }
 
     const productRoot = resolveProductDir(cwd, options, config);
+
+    if (deployTarget === 'node' || deployTarget === 'deno') {
+        const serverArtifact = loadServerBundleArtifact(productRoot);
+        if (serverArtifact.deployTarget !== deployTarget) {
+            throw new Error(
+                `wae publish deployTarget=${deployTarget} but ${serverArtifact.manifest.name ?? 'product'} built for ${serverArtifact.deployTarget}`,
+            );
+        }
+        const manifestPath = materializeServerPublish(productRoot, serverArtifact);
+        console.log(`[wae publish] deployTarget=${deployTarget}`);
+        console.log(`[wae publish] entry=${serverArtifact.entryFile}`);
+        console.log(`[wae publish] command=${serverPublishCommand(deployTarget, serverArtifact.entryFile)}`);
+        console.log(`[wae publish] manifest=${manifestPath}`);
+        console.log(`[wae publish] product=${productRoot}`);
+        console.log(`[wae publish] config=${configPath}`);
+        return;
+    }
+
+    if (deployTarget !== 'cloudflare') {
+        throw new Error(`wae publish does not support deployTarget=${deployTarget}`);
+    }
+
     const artifact = loadPublishArtifact(productRoot);
     const credentials = resolveCloudflareCredentials(config);
     const scriptName = config.cloudflare?.scriptName ?? artifact.manifest.name;
