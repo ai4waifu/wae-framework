@@ -101,6 +101,41 @@ jobs:
             - name: TypeScript check
               run: pnpm run check:ts
 
+            - name: Host HTTP conformance
+              run: pnpm run check:host-http
+
+            - name: Cloudflare KV conformance
+              run: pnpm run check:host-cloudflare-kv
+
+    host-deno:
+        name: Deno host smoke
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10.28.0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+                  cache: pnpm
+
+            - name: Setup Deno
+              uses: denoland/setup-deno@v2
+              with:
+                  deno-version: v2.x
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Deno host smoke
+              run: pnpm run check:host-deno
+
     native-smoke:
         name: Native smoke (${{ matrix.os }})
         strategy:
