@@ -40,6 +40,11 @@
             "types": "./dist/cloudflare/routes.d.ts",
             "import": "./dist/cloudflare/routes.js",
             "default": "./dist/cloudflare/routes.js"
+        },
+        "./cloudflare/domains": {
+            "types": "./dist/cloudflare/domains.d.ts",
+            "import": "./dist/cloudflare/domains.js",
+            "default": "./dist/cloudflare/domains.js"
         }
     },
     "files": [

@@ -17,6 +17,13 @@ export {
     type PublishWorkerBundleResult,
 } from './publish.js';
 export {
+    syncWorkerCustomDomains,
+    workerDomainsUrl,
+    type SyncWorkerCustomDomainsOptions,
+    type SyncWorkerCustomDomainsResult,
+    type WorkerCustomDomain,
+} from './domains.js';
+export {
     syncWorkerRoutes,
     workerRouteItemUrl,
     workerRoutesListUrl,
