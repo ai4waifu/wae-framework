@@ -36,6 +36,9 @@ function createFixtureApp() {
                 ctx.waitUntil(Promise.resolve('bg'));
                 return ctx.json({ bg: true });
             }),
+            route('GET', '/boom', () => {
+                throw new Error('boom');
+            }),
         ],
         middleware: [
             async (_ctx, next) => {
@@ -68,6 +71,9 @@ async function testCoreFetch() {
 
     const wrongMethod = await app.fetch(new Request('http://test/health', { method: 'POST' }));
     assert.equal(wrongMethod.status, 405);
+
+    const boom = await app.fetch(new Request('http://test/boom'));
+    assert.equal(boom.status, 500);
 
     const ac = new AbortController();
     ac.abort();
@@ -132,9 +138,43 @@ async function testNodeServe() {
 
         const wrongMethod = await fetch(`${base}/health`, { method: 'POST' });
         assert.equal(wrongMethod.status, 405);
+
+        const boom = await fetch(`${base}/boom`);
+        assert.equal(boom.status, 500);
     } finally {
         await handle.close();
     }
+}
+
+async function testNodeWaitUntilOnClose() {
+    let settled = false;
+    const app = createApp({
+        routes: [
+            route('GET', '/bg-delay', (ctx) => {
+                ctx.waitUntil(
+                    new Promise((resolve) => {
+                        setTimeout(() => {
+                            settled = true;
+                            resolve(null);
+                        }, 30);
+                    }),
+                );
+                return ctx.json({ ok: true });
+            }),
+        ],
+    });
+    const handle = await serve(app, { hostname: '127.0.0.1', port: 0 });
+
+    try {
+        const base = `http://${handle.hostname}:${handle.port}`;
+        const res = await fetch(`${base}/bg-delay`);
+        assert.equal(res.status, 200);
+        assert.deepEqual(await res.json(), { ok: true });
+        assert.equal(settled, false);
+    } finally {
+        await handle.close();
+    }
+    assert.equal(settled, true);
 }
 
 buildPackages();
@@ -142,4 +182,5 @@ await testCoreFetch();
 await testWorkerExport();
 await testDenoFetchHandler();
 await testNodeServe();
+await testNodeWaitUntilOnClose();
 console.log('host-http: ok');
