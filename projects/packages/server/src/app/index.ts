@@ -1,1 +1,1 @@
-export { createServer, route } from '../index.js';
+export { createApp, createServer, route } from '@wae/core';

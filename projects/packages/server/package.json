@@ -1,7 +1,7 @@
 {
     "name": "@wae/server",
     "version": "0.0.0",
-    "description": "平台无关 Fetch 服务端应用模型（不绑 Node / Tokio / Cloudflare）",
+    "description": "Node.js / Deno 常驻服务端宿主（`/node`、`/deno` 子路径）",
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -10,6 +10,21 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
             "default": "./dist/index.js"
+        },
+        "./node": {
+            "types": "./dist/node/index.d.ts",
+            "import": "./dist/node/index.js",
+            "default": "./dist/node/index.js"
+        },
+        "./deno": {
+            "types": "./dist/deno/index.d.ts",
+            "import": "./dist/deno/index.js",
+            "default": "./dist/deno/index.js"
+        },
+        "./app": {
+            "types": "./dist/app/index.d.ts",
+            "import": "./dist/app/index.js",
+            "default": "./dist/app/index.js"
         }
     },
     "files": [

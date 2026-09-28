@@ -1,7 +1,7 @@
 {
     "name": "@wae/serverless",
     "version": "0.0.0",
-    "description": "WAE server 统一运行时适配层（Fetch / lifecycle / bindings 抽象）",
+    "description": "Cloudflare Workers 等按请求运行的边缘宿主（`/cloudflare` 子路径）",
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -10,6 +10,21 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
             "default": "./dist/index.js"
+        },
+        "./cloudflare": {
+            "types": "./dist/cloudflare/index.d.ts",
+            "import": "./dist/cloudflare/index.js",
+            "default": "./dist/cloudflare/index.js"
+        },
+        "./cloudflare/durable-objects": {
+            "types": "./dist/cloudflare/durable-objects.d.ts",
+            "import": "./dist/cloudflare/durable-objects.js",
+            "default": "./dist/cloudflare/durable-objects.js"
+        },
+        "./cloudflare/queues": {
+            "types": "./dist/cloudflare/queues.d.ts",
+            "import": "./dist/cloudflare/queues.js",
+            "default": "./dist/cloudflare/queues.js"
         }
     },
     "files": [
@@ -21,7 +36,7 @@
         "prepublishOnly": "tsc -p tsconfig.json"
     },
     "dependencies": {
-        "@wae/server": "workspace:*",
+        "@wae/core": "workspace:*",
         "@wae/types": "workspace:*",
         "@wae/protocol": "workspace:*"
     },
