@@ -119,6 +119,12 @@ jobs:
             - name: Wrangler scaffold smoke
               run: pnpm run check:wrangler
 
+            - name: Deploy resolver smoke
+              run: pnpm run check:deploy
+
+            - name: WebSocket contract
+              run: pnpm run check:host-websocket
+
     host-deno:
         name: Deno host smoke
         runs-on: ubuntu-latest
