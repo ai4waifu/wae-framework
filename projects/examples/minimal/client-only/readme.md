@@ -48,7 +48,7 @@ createClient({ server: { baseUrl } })
 
 - Change `baseUrl` and see if types still pass `check`.
 - Read `@wae/client` `server.fetch` / `server.action` signatures; try real requests on **your own** HTTP server.
-- **Do not** add `createServer` here—that belongs to `minimal/server-only` and fullstack.
+- **Do not** add `createApp` server routes here—that belongs to `minimal/server-only` and fullstack.
 
 ## Differences from production apps
 

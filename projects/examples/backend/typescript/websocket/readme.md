@@ -42,7 +42,7 @@ WS client
   → backend upgrade or separate WS listener (target)
   → frame handling
   → push back
-(today only createServer placeholder)
+(today only `createApp` placeholder)
 ```
 
 0.0.0 code usually stops at “construct object”; full path not run yet.

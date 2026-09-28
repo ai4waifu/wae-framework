@@ -49,7 +49,7 @@ Frontend ClientMessage
 
 ## Exercises
 
-- Compare path diagram with `minimal/bridge-only`: “bridge → host” not `createServer`.
+- Compare path diagram with `minimal/bridge-only`: “bridge → host” not HTTP `createApp` listen.
 - Inspect `client.native` at type level; do not treat untrusted native messages as authorized system calls.
 - **Do not** add HTTP `route` in exercises here—that mixes wrong layers.
 

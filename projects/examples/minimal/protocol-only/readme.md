@@ -68,7 +68,7 @@ createRpcRequest / ClientMessage
 
 - Contrast with [`host/bridge`](../../../crates/wae-bridge/readme.md) `handle`: protocol is shape, bridge is delivery.
 
-- Do not treat encode/decode as HTTP `createServer` routing practice.
+- Do not treat encode/decode as HTTP `createApp` routing practice.
 
 ## Differences from production apps
 

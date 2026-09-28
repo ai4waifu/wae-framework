@@ -40,7 +40,7 @@ pnpm run build   # currently prints skeleton, no deployable output
 ```text
 createClient (browser)
   → browser bridge / HTTP
-  → remote createServer (not included in this example)
+  → remote `createApp` server (not included in this example)
   → Response → client decode
 ```
 

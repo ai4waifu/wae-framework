@@ -40,7 +40,7 @@ former are documentation guides; the latter are README-only.
 frontend/      Frontend runtime shapes (browser / desktop / mobile / webview / wasm)
 fullstack/     client + server composition intent
 backend/       Backends without WAE frontend (typescript/ · rust/)
-native/        Shell · IPC · system capabilities (via host, not createServer)
+native/        Shell · IPC · system capabilities (via host, not `createApp` HTTP listen)
 integration/   Framework is the variable
 minimal/       Single-capability boundaries
 ```

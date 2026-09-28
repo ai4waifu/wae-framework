@@ -40,7 +40,7 @@ pnpm run build   # currently prints skeleton, no deployable output
 
 ```text
 Request
-  → createServer renders HTML (target)
+  → `createApp` renders HTML (target)
   → Response text/html
   → browser hydrate → createClient takes over interaction
 ```

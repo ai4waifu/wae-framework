@@ -51,7 +51,7 @@ Mobile shell
 
 - Change `env.target` to documented mobile value if types allow; run `check` and observe constraints.
 - Contrast `frontend/mobile` (page) with this directory (shell / bridge).
-- Path practice should stay bridge→host, not `createServer`.
+- Path practice should stay bridge→host, not HTTP `createApp` listen.
 
 ## Differences from production apps
 

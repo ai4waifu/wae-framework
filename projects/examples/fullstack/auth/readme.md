@@ -32,7 +32,7 @@ pnpm run build   # currently prints skeleton, no deployable output
 
 ## Key files
 
-- `src/main.ts` — `createClient` + `createServer`
+- `src/main.ts` — `createClient` + `createApp`
 - `package.json`
 
 ## Request / event path (target semantics)

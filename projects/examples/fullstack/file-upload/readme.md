@@ -40,7 +40,7 @@ pnpm run build   # currently prints skeleton, no deployable output
 ```text
 client FormData / body
   → POST /upload (target)
-  → createServer handler reads body
+  → `createApp` handler reads body
   → store or echo metadata → JSON Response
 ```
 
