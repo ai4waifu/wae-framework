@@ -3,13 +3,15 @@
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { Readable } from 'node:stream';
-import type { WaeApp, WaeRequestContext } from '@wae/core';
+import type { WaeApp, WaeRequestContext, WaeExecutionContext } from '@wae/core';
 
 export type ServeOptions<Env = unknown, Services extends Record<string, unknown> = Record<string, unknown>> = {
     port?: number;
     hostname?: string;
     env?: Env;
     services?: Services | ((env: Env) => Services);
+    /** Await pending `waitUntil` tasks when `close()` is called. Default `true`. */
+    drainWaitUntilOnClose?: boolean;
 };
 
 export type ServeHandle = {
@@ -58,6 +60,22 @@ async function sendResponse(res: http.ServerResponse, web: Response): Promise<vo
     res.end();
 }
 
+function createNodeExecution(background: Set<Promise<unknown>>): WaeExecutionContext {
+    return {
+        waitUntil(task) {
+            background.add(task);
+            void task.finally(() => {
+                background.delete(task);
+            });
+        },
+    };
+}
+
+async function drainBackground(background: Set<Promise<unknown>>): Promise<void> {
+    if (background.size === 0) return;
+    await Promise.allSettled([...background]);
+}
+
 /**
  * Start a long-lived HTTP server backed by `node:http`.
  */
@@ -68,6 +86,8 @@ export async function serve<Env = unknown, Services extends Record<string, unkno
     const hostname = options.hostname ?? '127.0.0.1';
     const port = options.port ?? 3000;
     const env = (options.env ?? {}) as Env;
+    const drainWaitUntilOnClose = options.drainWaitUntilOnClose ?? true;
+    const background = new Set<Promise<unknown>>();
 
     const server = http.createServer(async (req, res) => {
         try {
@@ -81,6 +101,7 @@ export async function serve<Env = unknown, Services extends Record<string, unkno
                 env,
                 services,
                 signal: request.signal,
+                execution: createNodeExecution(background),
             };
             const response = await app.fetch(request, context);
             await sendResponse(res, response);
@@ -105,7 +126,17 @@ export async function serve<Env = unknown, Services extends Record<string, unkno
         hostname: address.address,
         close() {
             return new Promise<void>((resolve, reject) => {
-                server.close((error) => (error ? reject(error) : resolve()));
+                server.close((error) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    if (!drainWaitUntilOnClose) {
+                        resolve();
+                        return;
+                    }
+                    void drainBackground(background).then(() => resolve());
+                });
             });
         },
     };
