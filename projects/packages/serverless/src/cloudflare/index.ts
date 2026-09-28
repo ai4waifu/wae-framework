@@ -7,3 +7,4 @@ export {
     type CloudflareWorkerExport,
     type KeyValueStore,
 } from './worker.js';
+export { upgradeWebSocket, type CloudflareWebSocketPair, type CloudflareWebSocketRuntime } from './websocket.js';

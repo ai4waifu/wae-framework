@@ -25,6 +25,11 @@
             "types": "./dist/cloudflare/queues.d.ts",
             "import": "./dist/cloudflare/queues.js",
             "default": "./dist/cloudflare/queues.js"
+        },
+        "./cloudflare/websocket": {
+            "types": "./dist/cloudflare/websocket.d.ts",
+            "import": "./dist/cloudflare/websocket.js",
+            "default": "./dist/cloudflare/websocket.js"
         }
     },
     "files": [
