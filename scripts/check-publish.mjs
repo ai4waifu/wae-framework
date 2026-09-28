@@ -29,6 +29,9 @@ buildPackages();
 const { publishWorkerBundle, workerScriptUploadUrl } = await import(
     pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/publish.js')).href
 );
+const { syncWorkerRoutes, workerRoutesListUrl, workerRouteItemUrl } = await import(
+    pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/routes.js')).href
+);
 const { loadPublishArtifact } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/cli/publish-artifact.js')).href);
 const { resolveProductDir } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/cli/resolve-product-dir.js')).href);
 const { defineConfig } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/index.js')).href);
@@ -96,6 +99,57 @@ try {
     assert.equal(result.scriptName, 'demo-worker');
     assert.equal(result.moduleFile, 'worker.mjs');
     assert.equal(result.etag, 'etag-demo');
+
+    const routeCalls = [];
+    const routeSync = await syncWorkerRoutes({
+        accountId: 'acct_test',
+        apiToken: 'token_test',
+        scriptName: 'demo-worker',
+        routes: [{ pattern: 'api.example.com/*' }, { pattern: 'www.example.com/*' }],
+        fetch: async (url, init) => {
+            routeCalls.push({ url: String(url), method: init?.method ?? 'GET', body: init?.body });
+            const pathUrl = String(url);
+            if (pathUrl === workerRoutesListUrl('acct_test') && (init?.method ?? 'GET') === 'GET') {
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({
+                        success: true,
+                        result: [{ id: 'route-existing', pattern: 'api.example.com/*', script: 'other-worker' }],
+                        errors: [],
+                    }),
+                };
+            }
+            if (pathUrl === workerRoutesListUrl('acct_test') && init?.method === 'POST') {
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({
+                        success: true,
+                        result: { id: 'route-new', pattern: 'www.example.com/*', script: 'demo-worker' },
+                        errors: [],
+                    }),
+                };
+            }
+            if (pathUrl === workerRouteItemUrl('acct_test', 'route-existing') && init?.method === 'PUT') {
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({
+                        success: true,
+                        result: { id: 'route-existing', pattern: 'api.example.com/*', script: 'demo-worker' },
+                        errors: [],
+                    }),
+                };
+            }
+            throw new Error(`unexpected route fetch ${pathUrl} ${init?.method ?? 'GET'}`);
+        },
+    });
+
+    assert.deepEqual(routeSync.created, ['www.example.com/*']);
+    assert.deepEqual(routeSync.updated, ['api.example.com/*']);
+    assert.deepEqual(routeSync.unchanged, []);
+    assert.equal(routeCalls.length, 3);
 
     console.log('check-publish: ok');
 } finally {
