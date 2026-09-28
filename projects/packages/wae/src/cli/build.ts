@@ -8,6 +8,7 @@ import type { WaeBuildOptions } from '@wae/commander';
 import type { ClientPlatformId } from '@wae/types';
 import type { WaeConfig } from '../index.js';
 import { resolveProductMeta, writeProductManifest } from '../product/manifest.js';
+import { bundleServerEntry } from './build-server.js';
 import { loadWaeConfig } from './load-config.js';
 import { isNativeShellPlatform, platformPackageName, resolvePlatformId } from './platform.js';
 import { hasViteConfig, loadFrameworkPlugins, resolveVite } from './vite-helpers.js';
@@ -27,6 +28,7 @@ export async function cmdBuild(flags: WaeBuildOptions): Promise<void> {
     console.log(`[wae build] out=${path.relative(cwd, outDir) || outDir}`);
 
     await buildFrontend(cwd, config, path.join(outDir, meta.frontendDir));
+    await bundleServerEntry(cwd, config, outDir);
 
     if (isNativeShellPlatform(platformId)) {
         const nativeDest = path.join(outDir, meta.nativeRelativePath);
