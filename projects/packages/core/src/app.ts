@@ -1,6 +1,24 @@
 /** Shared Fetch HTTP application model (platform-neutral). */
 
+import type { WaeError } from '@wae/types';
+
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
+
+function toHandlerError(error: unknown): WaeError {
+    if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        'message' in error &&
+        typeof (error as WaeError).message === 'string'
+    ) {
+        return error as WaeError;
+    }
+    return {
+        code: 'Internal',
+        message: error instanceof Error ? error.message : String(error),
+    };
+}
 
 export type WaeExecutionContext = {
     waitUntil(task: Promise<unknown>): void;
@@ -213,8 +231,7 @@ export function createApp<Env = unknown, Services extends Record<string, unknown
             try {
                 return await dispatch(0);
             } catch (error) {
-                const message = error instanceof Error ? error.message : String(error);
-                return new Response(message, { status: 500 });
+                return Response.json(toHandlerError(error), { status: 500 });
             }
         },
     };
