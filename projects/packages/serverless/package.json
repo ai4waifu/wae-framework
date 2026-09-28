@@ -35,6 +35,11 @@
             "types": "./dist/cloudflare/publish.d.ts",
             "import": "./dist/cloudflare/publish.js",
             "default": "./dist/cloudflare/publish.js"
+        },
+        "./cloudflare/routes": {
+            "types": "./dist/cloudflare/routes.d.ts",
+            "import": "./dist/cloudflare/routes.js",
+            "default": "./dist/cloudflare/routes.js"
         }
     },
     "files": [

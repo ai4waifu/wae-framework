@@ -1,7 +1,13 @@
 /** Publish a Worker module via the Cloudflare Workers Scripts API (fetch only). */
 
+import {
+    CloudflareApiError,
+    formatCloudflareApiErrors,
+    type CloudflareApiEnvelope,
+    CLOUDFLARE_API_BASE,
+} from './api.js';
+
 const DEFAULT_COMPATIBILITY_DATE = '2024-09-01';
-const API_BASE = 'https://api.cloudflare.com/client/v4';
 
 export type PublishWorkerBundleOptions = {
     accountId: string;
@@ -22,24 +28,7 @@ export type PublishWorkerBundleResult = {
     etag?: string;
 };
 
-type CloudflareApiEnvelope = {
-    success: boolean;
-    errors?: Array<{ code?: number; message?: string }>;
-    messages?: Array<{ message?: string }>;
-    result?: { etag?: string };
-};
-
-export class CloudflareApiError extends Error {
-    readonly status: number;
-    readonly errors: Array<{ code?: number; message?: string }>;
-
-    constructor(message: string, status: number, errors: Array<{ code?: number; message?: string }> = []) {
-        super(message);
-        this.name = 'CloudflareApiError';
-        this.status = status;
-        this.errors = errors;
-    }
-}
+export { CloudflareApiError } from './api.js';
 
 export function buildWorkerUploadForm(
     moduleFile: string,
@@ -53,12 +42,7 @@ export function buildWorkerUploadForm(
 }
 
 export function workerScriptUploadUrl(accountId: string, scriptName: string): string {
-    return `${API_BASE}/accounts/${encodeURIComponent(accountId)}/workers/scripts/${encodeURIComponent(scriptName)}`;
-}
-
-function formatApiErrors(errors: Array<{ code?: number; message?: string }>): string {
-    if (errors.length === 0) return 'Cloudflare API request failed';
-    return errors.map((error) => error.message ?? `error ${error.code ?? 'unknown'}`).join('; ');
+    return `${CLOUDFLARE_API_BASE}/accounts/${encodeURIComponent(accountId)}/workers/scripts/${encodeURIComponent(scriptName)}`;
 }
 
 export async function publishWorkerBundle(options: PublishWorkerBundleOptions): Promise<PublishWorkerBundleResult> {
@@ -85,9 +69,9 @@ export async function publishWorkerBundle(options: PublishWorkerBundleOptions): 
         body: buildWorkerUploadForm(moduleFile, options.scriptBody, metadata),
     });
 
-    const body = (await response.json()) as CloudflareApiEnvelope;
+    const body = (await response.json()) as CloudflareApiEnvelope<{ etag?: string }>;
     if (!response.ok || !body.success) {
-        throw new CloudflareApiError(formatApiErrors(body.errors ?? []), response.status, body.errors ?? []);
+        throw new CloudflareApiError(formatCloudflareApiErrors(body.errors ?? []), response.status, body.errors ?? []);
     }
 
     return {

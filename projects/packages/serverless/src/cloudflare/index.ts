@@ -8,11 +8,19 @@ export {
     type KeyValueStore,
 } from './worker.js';
 export { upgradeWebSocket, type CloudflareWebSocketPair, type CloudflareWebSocketRuntime } from './websocket.js';
+export { CloudflareApiError } from './api.js';
 export {
     buildWorkerUploadForm,
-    CloudflareApiError,
     publishWorkerBundle,
     workerScriptUploadUrl,
     type PublishWorkerBundleOptions,
     type PublishWorkerBundleResult,
 } from './publish.js';
+export {
+    syncWorkerRoutes,
+    workerRouteItemUrl,
+    workerRoutesListUrl,
+    type SyncWorkerRoutesOptions,
+    type SyncWorkerRoutesResult,
+    type WorkerRoutePattern,
+} from './routes.js';
