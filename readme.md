@@ -163,6 +163,9 @@ wae/
 
 ```bash
 pnpm run check:boundary
+pnpm run check:host-http
+pnpm run check:host-cloudflare-kv
+pnpm run check:host-deno
 pnpm run fmt:check
 pnpm run publish:dry
 ```
