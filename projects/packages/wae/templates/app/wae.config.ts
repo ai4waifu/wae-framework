@@ -11,6 +11,14 @@ export default defineConfig({
         adapter: 'cloudflare',
     },
     target: 'web',
+    // cloudflare: {
+    //     accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+    //     apiToken: process.env.CLOUDFLARE_API_TOKEN,
+    //     scriptName: 'my-app',
+    //     bindings: [{ kind: 'kv_namespace', name: 'KV', namespaceId: '...' }],
+    //     routes: [{ pattern: 'api.example.com/*' }],
+    //     customDomains: [{ hostname: 'api.example.com', zoneId: '...' }],
+    // },
     // product: {
     //     update: { github: "your-org/your-app" },
     // },

@@ -74,6 +74,17 @@ dist/web/
 
 `preview` / `check` / `test` / `generate` are not wired yet. `create` materializes the app template with a single deploy target host.
 
+### Wired: `publish`
+
+After `wae build`, `wae publish` consumes `dist/<platform>/wae-product.json` and the bundled `server/*.mjs`:
+
+| `deployTarget` | Behavior |
+|----------------|----------|
+| `cloudflare` | Upload via Cloudflare Workers Scripts API (`publishWorkerBundle`), optional routes/domains/bindings from `wae.config#cloudflare` |
+| `node` / `deno` | Write `dist/<platform>/publish/server-publish.json` with the process start command (`node server/node.mjs` / `deno run`) |
+
+Credentials for Cloudflare: `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` or `cloudflare.accountId` / `cloudflare.apiToken` in config. No `wrangler deploy` wrapper.
+
 ### Wired: `create`
 
 ```bash

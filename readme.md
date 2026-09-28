@@ -106,6 +106,7 @@ pnpm run check:server-bundle
 pnpm run check:deploy-target-deps
 pnpm run check:wrangler
 pnpm run check:publish
+pnpm run check:publish-flow
 pnpm run check:ts
 pnpm exec wae help
 ```
@@ -176,6 +177,8 @@ pnpm run check:create
 pnpm run check:server-bundle
 pnpm run check:deploy-target-deps
 pnpm run check:wrangler
+pnpm run check:publish
+pnpm run check:publish-flow
 pnpm run fmt:check
 pnpm run publish:dry
 ```
