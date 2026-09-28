@@ -118,6 +118,20 @@ for (const name of exTop) {
         fail(`projects/examples/${name} is not a purpose kind (got framework-keyed layout?)`);
     }
 }
+
+for (const pkgPath of walkFiles(path.join(ROOT, 'projects/examples'), (p) => p.endsWith('package.json'))) {
+    const relDir = path.relative(ROOT, path.dirname(pkgPath));
+    const exampleDeps = deps(relDir);
+    if (exampleDeps.has('@wae/server') && exampleDeps.has('@wae/serverless')) {
+        fail(`${relDir} must not depend on both @wae/server and @wae/serverless`);
+    }
+}
+
+const templateRel = 'projects/packages/wae/templates/app';
+const templateDeps = deps(templateRel);
+if (templateDeps.has('@wae/server') && templateDeps.has('@wae/serverless')) {
+    fail(`${templateRel} must not depend on both @wae/server and @wae/serverless`);
+}
 for (const fw of UI_FRAMEWORKS) {
     if (exTop.includes(fw) || exTop.includes('vanilla')) {
         fail('examples must not be keyed by UI framework at top level');
