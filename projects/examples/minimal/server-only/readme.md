@@ -2,7 +2,7 @@
 
 ## What this example demonstrates
 
-Minimal server boundary: only `createServer()`, no `@wae/client`, no Node/Deno/Cloudflare adapter binding.
+Minimal server boundary: only `createApp()` (or deprecated `createServer()`), no `@wae/client`, no Node/Deno/Cloudflare host binding.
 
 ## Prerequisites
 
@@ -31,14 +31,14 @@ pnpm run build   # currently prints skeleton, no deployable output
 
 ## Key files
 
-- `src/main.ts` — `createServer()` then `void app`
+- `src/main.ts` — `createApp()` then `void app`
 - `package.json` — depends only on `@wae/server`
 
 ## Request / event path (target semantics)
 
 ```text
-createServer({ routes? })
-  → WaeServerApp.fetch(Request)
+createApp({ routes? })
+  → WaeApp.fetch(Request)
   → Response
 (this example does not call fetch or listen)
 ```
@@ -53,7 +53,7 @@ createServer({ routes? })
 
 ## Differences from production apps
 
-Production declares full routes / middleware and connects via `@wae/server-node` etc. This example stops at
-platform-agnostic `createServer`.
+Production declares full routes / middleware and connects via `@wae/server/node` or `@wae/serverless/cloudflare`. This example stops at
+platform-agnostic `createApp`.
 
 Dependencies (this example): `@wae/server`.

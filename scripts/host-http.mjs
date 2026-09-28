@@ -6,10 +6,6 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createApp, route } from '@wae/core';
-import { serve as denoServe } from '@wae/server/deno';
-import { serve } from '@wae/server/node';
-import { worker } from '@wae/serverless/cloudflare';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -25,7 +21,7 @@ function buildPackages() {
     }
 }
 
-function createFixtureApp() {
+function createFixtureApp(createApp, route) {
     const order = [];
     const app = createApp({
         routes: [
@@ -52,8 +48,8 @@ function createFixtureApp() {
     return { app, order };
 }
 
-async function testCoreFetch() {
-    const { app, order } = createFixtureApp();
+async function testCoreFetch(createApp, route) {
+    const { app, order } = createFixtureApp(createApp, route);
 
     const health = await app.fetch(new Request('http://test/health'));
     assert.equal(health.status, 200);
@@ -74,6 +70,7 @@ async function testCoreFetch() {
 
     const boom = await app.fetch(new Request('http://test/boom'));
     assert.equal(boom.status, 500);
+    assert.deepEqual(await boom.json(), { code: 'Internal', message: 'boom' });
 
     const ac = new AbortController();
     ac.abort();
@@ -86,8 +83,8 @@ async function testCoreFetch() {
     assert.deepEqual(await signalRes.json(), { aborted: true });
 }
 
-async function testWorkerExport() {
-    const { app, order } = createFixtureApp();
+async function testWorkerExport(createApp, route, worker) {
+    const { app, order } = createFixtureApp(createApp, route);
     const waitUntilTasks = [];
     const exported = worker(app);
 
@@ -107,8 +104,8 @@ async function testWorkerExport() {
     assert.equal(wrongMethod.status, 405);
 }
 
-async function testDenoFetchHandler() {
-    const { app } = createFixtureApp();
+async function testDenoFetchHandler(createApp, route, denoServe) {
+    const { app } = createFixtureApp(createApp, route);
     const fetchHandler = denoServe(app);
 
     const health = await fetchHandler(new Request('http://deno/health'));
@@ -119,8 +116,8 @@ async function testDenoFetchHandler() {
     assert.equal(wrongMethod.status, 405);
 }
 
-async function testNodeServe() {
-    const { app } = createFixtureApp();
+async function testNodeServe(createApp, route, serve) {
+    const { app } = createFixtureApp(createApp, route);
     const handle = await serve(app, { hostname: '127.0.0.1', port: 0 });
 
     try {
@@ -141,12 +138,13 @@ async function testNodeServe() {
 
         const boom = await fetch(`${base}/boom`);
         assert.equal(boom.status, 500);
+        assert.deepEqual(await boom.json(), { code: 'Internal', message: 'boom' });
     } finally {
         await handle.close();
     }
 }
 
-async function testNodeWaitUntilOnClose() {
+async function testNodeWaitUntilOnClose(createApp, route, serve) {
     let settled = false;
     const app = createApp({
         routes: [
@@ -178,9 +176,15 @@ async function testNodeWaitUntilOnClose() {
 }
 
 buildPackages();
-await testCoreFetch();
-await testWorkerExport();
-await testDenoFetchHandler();
-await testNodeServe();
-await testNodeWaitUntilOnClose();
+
+const { createApp, route } = await import('@wae/core');
+const { serve: denoServe } = await import('@wae/server/deno');
+const { serve } = await import('@wae/server/node');
+const { worker } = await import('@wae/serverless/cloudflare');
+
+await testCoreFetch(createApp, route);
+await testWorkerExport(createApp, route, worker);
+await testDenoFetchHandler(createApp, route, denoServe);
+await testNodeServe(createApp, route, serve);
+await testNodeWaitUntilOnClose(createApp, route, serve);
 console.log('host-http: ok');
