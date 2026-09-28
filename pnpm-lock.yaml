@@ -17,9 +17,9 @@ importers:
 
   .:
     devDependencies:
-      '@biomejs/biome':
-        specifier: 2.5.14
-        version: 2.5.14
+      '@doki-land/nifty':
+        specifier: ^0.0.6
+        version: 0.0.6
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -331,7 +331,7 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       '@vitejs/plugin-react':
         specifier: ^5.0.0
-        version: 5.2.0(vite@7.3.6(@types/node@22.20.4))
+        version: 5.2.0(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))
       '@wae/wae':
         specifier: workspace:*
         version: link:../../../packages/wae
@@ -340,7 +340,7 @@ importers:
         version: 5.9.3
       vite:
         specifier: 'catalog:'
-        version: 7.3.6(@types/node@22.20.4)
+        version: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
 
   projects/examples/integration/solid:
     dependencies:
@@ -378,10 +378,10 @@ importers:
         version: 5.9.3
       vite:
         specifier: 'catalog:'
-        version: 7.3.6(@types/node@22.20.4)
+        version: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
       vite-plugin-solid:
         specifier: ^2.11.0
-        version: 2.11.14(solid-js@1.9.15)(vite@7.3.6(@types/node@22.20.4))
+        version: 2.11.14(solid-js@1.9.15)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))
 
   projects/examples/integration/svelte:
     dependencies:
@@ -413,7 +413,7 @@ importers:
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^6.0.0
-        version: 6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4))
+        version: 6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))
       '@wae/wae':
         specifier: workspace:*
         version: link:../../../packages/wae
@@ -422,7 +422,7 @@ importers:
         version: 5.9.3
       vite:
         specifier: 'catalog:'
-        version: 7.3.6(@types/node@22.20.4)
+        version: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
 
   projects/examples/integration/vue:
     dependencies:
@@ -454,7 +454,7 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.0
-        version: 6.0.9(vite@7.3.6(@types/node@22.20.4))(vue@3.5.43(typescript@5.9.3))
+        version: 6.0.9(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))(vue@3.5.43(typescript@5.9.3))
       '@wae/wae':
         specifier: workspace:*
         version: link:../../../packages/wae
@@ -463,7 +463,7 @@ importers:
         version: 5.9.3
       vite:
         specifier: 'catalog:'
-        version: 7.3.6(@types/node@22.20.4)
+        version: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
       vue-tsc:
         specifier: ^2.2.0
         version: 2.2.12(typescript@5.9.3)
@@ -759,7 +759,7 @@ importers:
         version: 5.9.3
       vite:
         specifier: 'catalog:'
-        version: 7.3.6(@types/node@22.20.4)
+        version: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
     optionalDependencies:
       '@wae/wae-android-arm64':
         specifier: workspace:*
@@ -795,9 +795,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -811,9 +808,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -827,9 +821,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -843,9 +834,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -859,9 +847,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -875,9 +860,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -897,9 +879,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -913,9 +892,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@napi-rs/cli':
-        specifier: ^2.18.4
-        version: 2.18.4
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.4
@@ -1018,58 +994,24 @@ packages:
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
 
-  '@biomejs/biome@2.5.14':
-    resolution: {integrity: sha512-0FabLIjd4M/dm8VFI86RMaLLdgepzbdfiAL2R8cr7V81OYYrP1w7Z73KfAwPK5h9SrEBXTzNG2y+mBwPo9xRnw==}
-    engines: {node: '>=14.21.3'}
+  '@doki-land/nifty-darwin-arm64@0.0.6':
+    resolution: {integrity: sha512-l7ocqt4O00upQjATpkFRaibnwDt60Yz3quOv/bOrnbEUL8pUJVXGsePgmpa5SIBUhZzWLw5sY6/6mDPUCpOFVA==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@doki-land/nifty-linux-x64@0.0.6':
+    resolution: {integrity: sha512-2GLVwTqCeJciXH+xVHeaI+etwtfFXfy0hvweVkDarDCNQFGwXiAiea/ss14Yi2Kaf3wHllZ4aTV3qtuC7bR8ig==}
+    cpu: [x64]
+    os: [linux]
+
+  '@doki-land/nifty-win32-x64@0.0.6':
+    resolution: {integrity: sha512-jJ5SobV5/ZSchPn4xNGHP0oCz3fxKcNWGY3nCQhFkx15WSr5S8yi4gS2FncdTBpxarKYowwlx/Hl/G0u5yziow==}
+    cpu: [x64]
+    os: [win32]
+
+  '@doki-land/nifty@0.0.6':
+    resolution: {integrity: sha512-w7ss9o+uS2Q7/aYLKYH+5H4UmdfaDwwN8M0OjUvyRvGI9l/YUfoKtwT9xHSxB5I5UBC2JizCvadq4q2djdcEDw==}
     hasBin: true
-
-  '@biomejs/cli-darwin-arm64@2.5.14':
-    resolution: {integrity: sha512-UnzaXO65L4tsZimFITFP2M121GyhDcWFrT3pL5ZJ5U4XcS/0L5VHYytVohdCf/gnDUFHgl2I9xnt5bV/J1kxHQ==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@biomejs/cli-darwin-x64@2.5.14':
-    resolution: {integrity: sha512-kiy8qA16K93J7uvFfWi4LgjqDpnRKyePAna6A0Y4jxyUga35SYpIZ2cNWlhy0lsfgqRenCpfymnJWEZ6mgpRgA==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@biomejs/cli-linux-arm64-musl@2.5.14':
-    resolution: {integrity: sha512-SJ9PrZkBnnH9dHJDnxk34vKs0GB2dbsioaft6/hPhWJ7AHpwYH83Isnhj0FSRpFkGgpVfJ1lds23ApB2czUDLQ==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@biomejs/cli-linux-arm64@2.5.14':
-    resolution: {integrity: sha512-vO/9BaU1n30CiFNLx49gMTMtbCAAqlo/EqFoG0BU3deQInTbJrmXSmTQ9e3FoDZIKQnvSLDVNL4lx1ci7y1T1Q==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@biomejs/cli-linux-x64-musl@2.5.14':
-    resolution: {integrity: sha512-2kI5PrMgW5dcEZYrstLPmUmCwkUwZY39rP4BN93Vxbwcs2O57LDQOktUZZYPvvspN5i0mhGr3TJtF5sU26NUWg==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-
-  '@biomejs/cli-linux-x64@2.5.14':
-    resolution: {integrity: sha512-VHZRa7CCQBUWKxNwUvHJeuW03WFRgN5NWO//SDGOitc9QIeNyfA42V9zlKm+x82xFSG9Bzi5fi+hbhm9anO8yA==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [linux]
-
-  '@biomejs/cli-win32-arm64@2.5.14':
-    resolution: {integrity: sha512-pHgAFffmZtaYoxavEsWEYNvcA7NwOIjLyqw2HXyLbt16xYryX0L4fMV2u0G9ag6LNYPIoqWaWqzUcnc6rLGGXg==}
-    engines: {node: '>=14.21.3'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@biomejs/cli-win32-x64@2.5.14':
-    resolution: {integrity: sha512-oJWmBhoHsnhUKIke+0gXDX0mltJrWHA1UyHsrTlXwX0TL64ilVZAo+TYZm97baecV0esBdpzy3k96q+09JaZUQ==}
-    engines: {node: '>=14.21.3'}
-    cpu: [x64]
-    os: [win32]
 
   '@esbuild/aix-ppc64@0.25.12':
     resolution: {integrity: sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==}
@@ -1399,11 +1341,6 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@napi-rs/cli@2.18.4':
-    resolution: {integrity: sha512-SgJeA4df9DE2iAEpr3M2H0OKl/yjtg1BnRI5/JyowS71tUWhrfSu2LT0V3vlHET+g1hBVlrO60PmEXwUEKp8Mg==}
-    engines: {node: '>= 10'}
-    hasBin: true
-
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     resolution: {integrity: sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ==}
     engines: {node: ^22.20 || ^24.12 || >=25}
@@ -1599,6 +1536,10 @@ packages:
     peerDependencies:
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
       vue: ^3.2.25
+
+  '@vmz/commander@0.2.1':
+    resolution: {integrity: sha512-d8jANu6hzjeh3dpJLlcWlGbdFXIgpmzZifCHnBPx4LoEyBLhf859oSZ2lkgsE1n3FncCwEBxnX7JiLvT/gCPNQ==}
+    engines: {node: '>=20'}
 
   '@volar/language-core@2.4.15':
     resolution: {integrity: sha512-3VHw+QZU0ZG9IuQmzT68IyN4hZNd9GchGPhbD9+pa8CVv7rnoOZwo7T8weIbrRmihqy3ATpdfXFnqRrfPVK6CA==}
@@ -1799,6 +1740,10 @@ packages:
   is-what@4.1.16:
     resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
     engines: {node: '>=12.13'}
+
+  jiti@2.7.0:
+    resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
+    hasBin: true
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -2139,40 +2084,23 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@biomejs/biome@2.5.14':
+  '@doki-land/nifty-darwin-arm64@0.0.6':
+    optional: true
+
+  '@doki-land/nifty-linux-x64@0.0.6':
+    optional: true
+
+  '@doki-land/nifty-win32-x64@0.0.6':
+    optional: true
+
+  '@doki-land/nifty@0.0.6':
+    dependencies:
+      '@vmz/commander': 0.2.1
+      jiti: 2.7.0
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.5.14
-      '@biomejs/cli-darwin-x64': 2.5.14
-      '@biomejs/cli-linux-arm64': 2.5.14
-      '@biomejs/cli-linux-arm64-musl': 2.5.14
-      '@biomejs/cli-linux-x64': 2.5.14
-      '@biomejs/cli-linux-x64-musl': 2.5.14
-      '@biomejs/cli-win32-arm64': 2.5.14
-      '@biomejs/cli-win32-x64': 2.5.14
-
-  '@biomejs/cli-darwin-arm64@2.5.14':
-    optional: true
-
-  '@biomejs/cli-darwin-x64@2.5.14':
-    optional: true
-
-  '@biomejs/cli-linux-arm64-musl@2.5.14':
-    optional: true
-
-  '@biomejs/cli-linux-arm64@2.5.14':
-    optional: true
-
-  '@biomejs/cli-linux-x64-musl@2.5.14':
-    optional: true
-
-  '@biomejs/cli-linux-x64@2.5.14':
-    optional: true
-
-  '@biomejs/cli-win32-arm64@2.5.14':
-    optional: true
-
-  '@biomejs/cli-win32-x64@2.5.14':
-    optional: true
+      '@doki-land/nifty-darwin-arm64': 0.0.6
+      '@doki-land/nifty-linux-x64': 0.0.6
+      '@doki-land/nifty-win32-x64': 0.0.6
 
   '@esbuild/aix-ppc64@0.25.12':
     optional: true
@@ -2349,8 +2277,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@napi-rs/cli@2.18.4': {}
-
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
@@ -2437,22 +2363,22 @@ snapshots:
     dependencies:
       acorn: 8.18.0
 
-  '@sveltejs/vite-plugin-svelte-inspector@5.0.2(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)))(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4))':
+  '@sveltejs/vite-plugin-svelte-inspector@5.0.2(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0)))(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4))
+      '@sveltejs/vite-plugin-svelte': 6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))
       obug: 2.2.1
       svelte: 5.57.1
-      vite: 7.3.6(@types/node@22.20.4)
+      vite: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
 
-  '@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4))':
+  '@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 5.0.2(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)))(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4))
+      '@sveltejs/vite-plugin-svelte-inspector': 5.0.2(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0)))(svelte@5.57.1)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))
       deepmerge: 4.3.1
       magic-string: 0.30.21
       obug: 2.2.1
       svelte: 5.57.1
-      vite: 7.3.6(@types/node@22.20.4)
-      vitefu: 1.1.3(vite@7.3.6(@types/node@22.20.4))
+      vite: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
+      vitefu: 1.1.3(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -2489,7 +2415,7 @@ snapshots:
     dependencies:
       csstype: 3.2.3
 
-  '@vitejs/plugin-react@5.2.0(vite@7.3.6(@types/node@22.20.4))':
+  '@vitejs/plugin-react@5.2.0(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.7)
@@ -2497,15 +2423,17 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.3
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.6(@types/node@22.20.4)
+      vite: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@6.0.9(vite@7.3.6(@types/node@22.20.4))(vue@3.5.43(typescript@5.9.3))':
+  '@vitejs/plugin-vue@6.0.9(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))(vue@3.5.43(typescript@5.9.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 7.3.6(@types/node@22.20.4)
+      vite: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
       vue: 3.5.43(typescript@5.9.3)
+
+  '@vmz/commander@0.2.1': {}
 
   '@volar/language-core@2.4.15':
     dependencies:
@@ -2744,6 +2672,8 @@ snapshots:
 
   is-what@4.1.16: {}
 
+  jiti@2.7.0: {}
+
   js-tokens@4.0.0: {}
 
   jsesc@3.1.0: {}
@@ -2897,7 +2827,7 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  vite-plugin-solid@2.11.14(solid-js@1.9.15)(vite@7.3.6(@types/node@22.20.4)):
+  vite-plugin-solid@2.11.14(solid-js@1.9.15)(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0)):
     dependencies:
       '@babel/core': 7.29.7
       '@types/babel__core': 7.20.5
@@ -2905,12 +2835,12 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.15
       solid-refresh: 0.6.3(solid-js@1.9.15)
-      vite: 7.3.6(@types/node@22.20.4)
-      vitefu: 1.1.3(vite@7.3.6(@types/node@22.20.4))
+      vite: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
+      vitefu: 1.1.3(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0))
     transitivePeerDependencies:
       - supports-color
 
-  vite@7.3.6(@types/node@22.20.4):
+  vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0):
     dependencies:
       esbuild: 0.28.2
       fdir: 6.5.0(picomatch@4.0.7)
@@ -2921,10 +2851,11 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.20.4
       fsevents: 2.3.3
+      jiti: 2.7.0
 
-  vitefu@1.1.3(vite@7.3.6(@types/node@22.20.4)):
+  vitefu@1.1.3(vite@7.3.6(@types/node@22.20.4)(jiti@2.7.0)):
     optionalDependencies:
-      vite: 7.3.6(@types/node@22.20.4)
+      vite: 7.3.6(@types/node@22.20.4)(jiti@2.7.0)
 
   vscode-uri@3.2.0: {}
 

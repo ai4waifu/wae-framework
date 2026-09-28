@@ -16,8 +16,8 @@
         "test": "pnpm -r --if-present test && cargo test --workspace",
         "examples": "pnpm --filter \"./projects/examples/**\" run build",
         "wae": "pnpm --filter @wae/wae exec node ./bin/wae.mjs",
-        "fmt": "node scripts/format.mjs",
-        "fmt:check": "node scripts/format.mjs --check",
+        "fmt": "nifty format",
+        "fmt:check": "nifty format --check",
         "publish:dry": "node scripts/publish.mjs",
         "publish:npm": "node scripts/publish.mjs --execute",
         "build:native": "node scripts/build-platform-native.mjs",
@@ -25,7 +25,7 @@
         "pack:product-native": "node scripts/pack-product-native.mjs"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.14",
+        "@doki-land/nifty": "^0.0.6",
         "typescript": "catalog:"
     }
 }

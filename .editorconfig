@@ -1,4 +1,4 @@
-# Align with biome.json (JetBrains / VS Code / Cursor).
+# Align with `nifty format` defaults (JetBrains / VS Code / Cursor).
 
 root = true
 

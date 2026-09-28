@@ -95,9 +95,6 @@ jobs:
             - name: Format check
               run: pnpm run fmt:check
 
-            - name: Biome check
-              run: pnpm exec biome check .
-
             - name: Boundary check
               run: pnpm run check:boundary
 
