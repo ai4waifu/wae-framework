@@ -1,4 +1,4 @@
-/** Emit `wrangler.toml` for Cloudflare Worker deploy trees. */
+/** Optional `wrangler.toml` for local wrangler dev interop — not the WAE publish contract. */
 
 import fs from 'node:fs';
 import path from 'node:path';

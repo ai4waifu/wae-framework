@@ -67,7 +67,7 @@ Produces the **shipped product** under `dist/<platform>/`:
 dist/web/
   frontend/                 # Vite build output
   server/worker.mjs         # when deployTarget=cloudflare (node.mjs / deno.mjs otherwise)
-  wrangler.toml             # cloudflare deploy scaffold (build output only)
+  wrangler.toml             # optional local wrangler dev interop (not WAE publish truth)
   wae-product.json          # name, version, server.entry, update.github, nativePath
 ```
 

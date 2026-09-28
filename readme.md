@@ -170,6 +170,7 @@ pnpm run check:boundary
 pnpm run check:host-http
 pnpm run check:host-cloudflare-kv
 pnpm run check:host-deno
+pnpm run check:host-websocket
 pnpm run check:create
 pnpm run check:server-bundle
 pnpm run check:deploy-target-deps
