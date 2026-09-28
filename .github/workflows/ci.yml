@@ -107,6 +107,9 @@ jobs:
             - name: Cloudflare KV conformance
               run: pnpm run check:host-cloudflare-kv
 
+            - name: Wae create smoke
+              run: pnpm run check:create
+
     host-deno:
         name: Deno host smoke
         runs-on: ubuntu-latest

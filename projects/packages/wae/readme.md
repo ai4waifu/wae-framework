@@ -30,7 +30,7 @@ Installing pulls `@wae/wae-*` by platform (`optionalDependencies`). Binary name:
 ## CLI
 
 ```text
-wae create <name>
+wae create <name> [--server node|deno|cloudflare]
 wae dev [--platform <id>] [--port <n>] [--host <addr>] [--open|--no-open]
 wae build [--platform <id>]
 wae preview
@@ -70,7 +70,17 @@ dist/win32-x64/
   wae-product.json          # name, version, update.github, nativePath
 ```
 
-`create` / `preview` / `check` / `test` / `generate` are not wired yet.
+`preview` / `check` / `test` / `generate` are not wired yet. `create` materializes the app template with a single deploy target host.
+
+### Wired: `create`
+
+```bash
+wae create my-app --server node
+wae create my-app --server deno
+wae create my-app --server cloudflare   # default
+```
+
+Writes `deployTarget` and matching `server.adapter` in `wae.config.ts`, sets **one** host dependency (`@wae/server` or `@wae/serverless`), and includes only the matching entry file (`src/server/node.ts`, `deno.ts`, or `worker.ts`). Shared app logic stays in `src/server/app.ts`.
 
 Debug in repo:
 
@@ -85,6 +95,7 @@ pnpm --filter @wae-example/integration-vue-app exec wae run --port 5173
 import { defineConfig } from "@wae/wae";
 
 export default defineConfig({
+  deployTarget: "node",
   frontend: {
     framework: "vue", // vue | react | svelte | solid | none
     // adapter: vue(),

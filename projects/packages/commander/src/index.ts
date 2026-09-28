@@ -20,11 +20,20 @@ export type WaeBuildOptions = {
 
 export type RunDevHandler = (options: WaeRunOptions, mode: 'run' | 'dev') => Promise<void>;
 export type BuildHandler = (options: WaeBuildOptions) => Promise<void>;
+export type CreateHandler = (options: WaeCreateOptions) => Promise<void>;
 export type StubHandler = (cmd: string, args: string[]) => void | Promise<void>;
+
+export type WaeCreateOptions = {
+    name: string;
+    server: string;
+    cwd: string;
+    extraArgs: string[];
+};
 
 export type WaeCommandHandlers = {
     run?: RunDevHandler;
     build?: BuildHandler;
+    create?: CreateHandler;
     stub?: StubHandler;
 };
 
@@ -77,7 +86,21 @@ export function createWaeProgram(handlers: WaeCommandHandlers = {}): Command {
             (handlers.stub ?? defaultStub)('build', options.extraArgs);
         });
 
-    for (const name of ['create', 'preview', 'check', 'test', 'generate'] as const) {
+    program
+        .command('create')
+        .description('Create a new app from template (single deploy target host)')
+        .argument('[name]', 'project directory name')
+        .option('--server <id>', 'deploy target: node, deno, or cloudflare', 'cloudflare')
+        .action(async (name, _opts, cmd) => {
+            const options = readCreateOptions(cmd, String(name ?? ''));
+            if (handlers.create) {
+                await handlers.create(options);
+                return;
+            }
+            (handlers.stub ?? defaultStub)('create', cmd.args.slice());
+        });
+
+    for (const name of ['preview', 'check', 'test', 'generate'] as const) {
         program
             .command(name)
             .description(`${name} (skeleton)`)
@@ -116,6 +139,17 @@ export function readBuildOptions(cmd: Command): WaeBuildOptions {
         platform: opts.platform,
         outDir: opts.outDir,
         extraArgs: cmd.args.slice(),
+    };
+}
+
+export function readCreateOptions(cmd: Command, name = ''): WaeCreateOptions {
+    const opts = cmd.opts() as { server?: string };
+    const resolvedName = name || cmd.args[0] || '';
+    return {
+        name: resolvedName,
+        server: opts.server ?? 'cloudflare',
+        cwd: process.cwd(),
+        extraArgs: cmd.args.slice(1),
     };
 }
 
