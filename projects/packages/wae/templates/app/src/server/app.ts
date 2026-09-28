@@ -1,5 +1,5 @@
-import { createServer, route } from '@wae/server';
+import { createApp, route } from '@wae/core';
 
-export const app = createServer({
+export const app = createApp({
     routes: [route('GET', '/api/health', (ctx) => ctx.json({ ok: true }))],
 });

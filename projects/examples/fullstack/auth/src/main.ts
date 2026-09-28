@@ -1,7 +1,7 @@
 import { createClient } from '@wae/client';
-import { createServer } from '@wae/server';
+import { createApp } from '@wae/core';
 
 const client = createClient({ server: { baseUrl: '/api' } });
-const app = createServer();
+const app = createApp();
 void client;
 void app;

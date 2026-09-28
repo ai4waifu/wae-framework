@@ -1,4 +1,5 @@
-import { createServer } from '@wae/server';
+import { createApp } from '@wae/core';
+import { serve } from '@wae/server/node';
 
-const app = createServer();
-void app;
+const app = createApp();
+void serve(app);

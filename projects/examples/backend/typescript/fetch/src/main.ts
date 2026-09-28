@@ -1,4 +1,4 @@
-import { createServer } from '@wae/server';
+import { createApp } from '@wae/core';
 
-const app = createServer();
+const app = createApp();
 void app;

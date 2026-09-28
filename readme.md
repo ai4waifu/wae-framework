@@ -44,9 +44,9 @@ App config (@wae/wae · defineConfig)
 | `@wae/wae`                                               | Need CLI and `defineConfig`                                                                        |
 | `@wae/client`                                            | Any frontend (including no framework)                                                              |
 | `@wae/adapter-vue` / `react` / `svelte` / `solid`        | Only when using that framework                                                                     |
-| `@wae/server`                                            | Write cross-runtime handlers                                                                       |
-| `@wae/serverless`                                        | Need Worker-style `fetch` export                                                                   |
-| `@wae/server-node` / `server-deno` / `server-cloudflare` | Deploy to that runtime                                                                             |
+| `@wae/core`                                              | Shared `createApp` / routes (all server targets)                                                   |
+| `@wae/server`                                            | Node.js / Deno hosts (`/node`, `/deno`)                                                           |
+| `@wae/serverless`                                        | Cloudflare Workers (`/cloudflare`)                                                                 |
 | `@wae/types` / `@wae/core` / `@wae/protocol`             | Protocol/types/IDs and encode-decode                                                               |
 | `@wae/wae-*`                                             | Generally **do not** install manually; pulled as `optionalDependencies` when installing `@wae/wae` |
 
@@ -64,9 +64,9 @@ See [`@wae/wae`](projects/packages/wae/readme.md) for details.
 ## Choosing by target
 
 - **Browser frontend only**: `@wae/client` + optional adapter; `wae run` starts Vite (no `@wae/wae-*` platform package).
-- **Node HTTP service**: `@wae/server` + `@wae/server-node` (current `serve` is skeleton, does not actually `listen`).
-- **Deno**: `@wae/server` + `@wae/server-deno` (exports adapted `fetch`).
-- **Cloudflare Worker**: `@wae/server` + `@wae/server-cloudflare` (`createCloudflareApp` / `createWorker`).
+- **Node HTTP service**: `@wae/core` + `@wae/server/node` (`serve` is still a skeleton listener).
+- **Deno**: `@wae/core` + `@wae/server/deno`.
+- **Cloudflare Worker**: `@wae/core` + `@wae/serverless/cloudflare` (`worker(app)`).
 - **Wasm client**: `@wae/wae-unknown-wasm32`; build/load details in that package README (placeholder API today).
 - **Desktop WebView**: `target: "desktop"` + matching `@wae/wae-win32-*` / `darwin-*` / `linux-*` + Rust host; native
   binaries not yet in npm.
@@ -89,9 +89,9 @@ Open the Local URL printed in the terminal; you should see a title and a "ping c
 ### B. Library API (no process needed)
 
 ```ts
-import {createServer, route} from "@wae/server";
+import {createApp, route} from "@wae/core";
 
-const app = createServer({
+const app = createApp({
     routes: [route("GET", "/hello", (ctx) => ctx.json({ok: true}))],
 });
 await app.fetch(new Request("http://x/hello")); // → JSON
@@ -112,7 +112,7 @@ pnpm exec wae help
 ```text
 createClient → server.fetch / action
   → HTTP
-  → createServer route handler
+  → createApp route handler
   → Response
   → client decode (action expects JSON)
 ```
@@ -129,7 +129,7 @@ ClientMessage (@wae/protocol)
 **Worker deployment**
 
 ```text
-createServer → adaptFetch / createCloudflareApp
+createApp → worker(app) [@wae/serverless/cloudflare]
   → runtime fetch(request, env, ctx)
 ```
 

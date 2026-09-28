@@ -175,11 +175,16 @@ for (const bad of [
     if (serverDeps.has(bad)) fail(`server must not depend on ${bad}`);
 }
 
-for (const a of ['node', 'deno', 'cloudflare']) {
-    const d = deps(`projects/packages/server-${a}`);
-    if (!d.has('@wae/serverless')) fail(`adapter ${a} must depend on @wae/serverless`);
-    if (!d.has('@wae/server')) fail(`adapter ${a} must depend on @wae/server`);
+for (const legacy of ['server-node', 'server-deno', 'server-cloudflare']) {
+    if (fs.existsSync(path.join(ROOT, 'projects/packages', legacy))) {
+        fail(`projects/packages/${legacy} must not exist; use @wae/server or @wae/serverless subpaths`);
+    }
 }
+
+const serverlessDeps = deps('projects/packages/serverless');
+if (serverlessDeps.has('@wae/server')) fail('@wae/serverless must not depend on @wae/server');
+if (!serverlessDeps.has('@wae/core')) fail('@wae/serverless must depend on @wae/core');
+if (!serverDeps.has('@wae/core')) fail('@wae/server must depend on @wae/core');
 
 const waeRel = 'projects/packages/wae';
 const commanderRel = 'projects/packages/commander';

@@ -26,12 +26,9 @@ importers:
 
   projects/examples/backend/typescript/cloudflare:
     dependencies:
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../../packages/server
-      '@wae/server-cloudflare':
-        specifier: workspace:*
-        version: link:../../../../packages/server-cloudflare
+        version: link:../../../../packages/core
       '@wae/serverless':
         specifier: workspace:*
         version: link:../../../../packages/serverless
@@ -45,15 +42,12 @@ importers:
 
   projects/examples/backend/typescript/deno:
     dependencies:
+      '@wae/core':
+        specifier: workspace:*
+        version: link:../../../../packages/core
       '@wae/server':
         specifier: workspace:*
         version: link:../../../../packages/server
-      '@wae/server-deno':
-        specifier: workspace:*
-        version: link:../../../../packages/server-deno
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../../packages/serverless
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -64,12 +58,9 @@ importers:
 
   projects/examples/backend/typescript/fetch:
     dependencies:
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../../packages/serverless
+        version: link:../../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -80,15 +71,12 @@ importers:
 
   projects/examples/backend/typescript/node:
     dependencies:
+      '@wae/core':
+        specifier: workspace:*
+        version: link:../../../../packages/core
       '@wae/server':
         specifier: workspace:*
         version: link:../../../../packages/server
-      '@wae/server-node':
-        specifier: workspace:*
-        version: link:../../../../packages/server-node
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../../packages/serverless
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -99,12 +87,9 @@ importers:
 
   projects/examples/backend/typescript/websocket:
     dependencies:
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../../packages/serverless
+        version: link:../../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -183,12 +168,9 @@ importers:
       '@wae/client':
         specifier: workspace:*
         version: link:../../../packages/client
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../packages/serverless
+        version: link:../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -202,12 +184,9 @@ importers:
       '@wae/client':
         specifier: workspace:*
         version: link:../../../packages/client
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../packages/serverless
+        version: link:../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -221,12 +200,9 @@ importers:
       '@wae/client':
         specifier: workspace:*
         version: link:../../../packages/client
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../packages/serverless
+        version: link:../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -240,12 +216,9 @@ importers:
       '@wae/client':
         specifier: workspace:*
         version: link:../../../packages/client
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../packages/serverless
+        version: link:../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -259,12 +232,9 @@ importers:
       '@wae/client':
         specifier: workspace:*
         version: link:../../../packages/client
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../packages/serverless
+        version: link:../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -278,12 +248,9 @@ importers:
       '@wae/client':
         specifier: workspace:*
         version: link:../../../packages/client
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../packages/server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../../../packages/serverless
+        version: link:../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -483,9 +450,9 @@ importers:
 
   projects/examples/minimal/server-only:
     dependencies:
-      '@wae/server':
+      '@wae/core':
         specifier: workspace:*
-        version: link:../../../packages/server
+        version: link:../../../packages/core
     devDependencies:
       '@wae/wae':
         specifier: workspace:*
@@ -682,53 +649,14 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
-  projects/packages/server-cloudflare:
-    dependencies:
-      '@wae/server':
-        specifier: workspace:*
-        version: link:../server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../serverless
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-
-  projects/packages/server-deno:
-    dependencies:
-      '@wae/server':
-        specifier: workspace:*
-        version: link:../server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../serverless
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-
-  projects/packages/server-node:
-    dependencies:
-      '@wae/server':
-        specifier: workspace:*
-        version: link:../server
-      '@wae/serverless':
-        specifier: workspace:*
-        version: link:../serverless
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-
   projects/packages/serverless:
     dependencies:
+      '@wae/core':
+        specifier: workspace:*
+        version: link:../core
       '@wae/protocol':
         specifier: workspace:*
         version: link:../protocol
-      '@wae/server':
-        specifier: workspace:*
-        version: link:../server
       '@wae/types':
         specifier: workspace:*
         version: link:../types

@@ -9,8 +9,7 @@
     },
     "dependencies": {
         "@wae/client": "workspace:*",
-        "@wae/server": "workspace:*",
-        "@wae/serverless": "workspace:*"
+        "@wae/core": "workspace:*"
     },
     "devDependencies": {
         "@wae/wae": "workspace:*",

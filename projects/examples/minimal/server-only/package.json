@@ -8,7 +8,7 @@
         "test": "node -e \"console.log('example skeleton test')\""
     },
     "dependencies": {
-        "@wae/server": "workspace:*"
+        "@wae/core": "workspace:*"
     },
     "devDependencies": {
         "@wae/wae": "workspace:*",

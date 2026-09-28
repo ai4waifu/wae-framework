@@ -10,8 +10,8 @@ All publishable `@wae/*` npm packages in a flat directory (when directory name �
 | `client`                            | `@wae/client`             | Framework-agnostic frontend runtime |
 | `adapter-vue` … `adapter-solid`     | `@wae/adapter-*`          | Framework injection                 |
 | `types` / `core` / `protocol`       | `@wae/types` etc.         | Communication layer                 |
-| `server` / `serverless`             | `@wae/server` etc.        | Cross-runtime server                |
-| `server-node` … `server-cloudflare` | `@wae/server-*`           | Runtime bindings                    |
+| `server`                            | `@wae/server`             | Node / Deno hosts (`/node`, `/deno`) |
+| `serverless`                        | `@wae/serverless`         | Edge hosts (`/cloudflare`)          |
 | `wae-unknown-wasm32`                | `@wae/wae-unknown-wasm32` | Wasm client (explicit opt-in)       |
 | `wae-win32-x64` etc.                | `@wae/wae-*`              | Desktop / mobile platform shells    |
 
