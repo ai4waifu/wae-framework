@@ -1,6 +1,7 @@
 import { defineConfig } from '@wae/wae';
 
 export default defineConfig({
+    deployTarget: 'cloudflare',
     frontend: {
         framework: 'none',
         entry: './src/client/main.ts',

@@ -45,6 +45,8 @@ export type WaeConfig = {
         /** `bundler: "custom"` 时的开发服务器 URL（例如 http://127.0.0.1:3000） */
         devUrl?: string;
     };
+    /** Single backend host selection (node, deno, cloudflare). Mirrors `server.adapter`. */
+    deployTarget?: ServerAdapterId;
     server?: {
         entry?: string;
         adapter?: ServerAdapterId;
@@ -84,6 +86,7 @@ export type WaeConfig = {
  * 文件已是 `wae.config.ts`，API 名无需再带 Wae 前缀。
  */
 export function defineConfig(config: WaeConfig): WaeConfig {
+    const deployTarget = config.deployTarget ?? config.server?.adapter ?? config.platform?.server;
     return {
         frontend: {
             framework: config.frontend?.framework ?? 'none',
@@ -92,7 +95,15 @@ export function defineConfig(config: WaeConfig): WaeConfig {
             bundler: config.frontend?.bundler ?? 'vite',
             devUrl: config.frontend?.devUrl,
         },
-        server: config.server,
+        deployTarget,
+        server: config.server
+            ? {
+                  entry: config.server.entry,
+                  adapter: deployTarget ?? config.server.adapter,
+              }
+            : deployTarget
+              ? { adapter: deployTarget }
+              : undefined,
         target: config.target ?? 'web',
         platform: config.platform,
         product: config.product
