@@ -110,6 +110,9 @@ jobs:
             - name: Wae create smoke
               run: pnpm run check:create
 
+            - name: Server bundle smoke
+              run: pnpm run check:server-bundle
+
     host-deno:
         name: Deno host smoke
         runs-on: ubuntu-latest
