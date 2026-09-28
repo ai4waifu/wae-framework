@@ -29,6 +29,9 @@ buildPackages();
 const { publishWorkerBundle, workerScriptUploadUrl } = await import(
     pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/publish.js')).href
 );
+const { syncWorkerCustomDomains, workerDomainsUrl } = await import(
+    pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/domains.js')).href
+);
 const { syncWorkerRoutes, workerRoutesListUrl, workerRouteItemUrl } = await import(
     pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/routes.js')).href
 );
@@ -99,6 +102,55 @@ try {
     assert.equal(result.scriptName, 'demo-worker');
     assert.equal(result.moduleFile, 'worker.mjs');
     assert.equal(result.etag, 'etag-demo');
+
+    const domainCalls = [];
+    const domainSync = await syncWorkerCustomDomains({
+        accountId: 'acct_test',
+        apiToken: 'token_test',
+        scriptName: 'demo-worker',
+        domains: [
+            { hostname: 'api.example.com', zoneId: 'zone_api' },
+            { hostname: 'www.example.com', zoneId: 'zone_www' },
+        ],
+        fetch: async (url, init) => {
+            domainCalls.push({ url: String(url), method: init?.method ?? 'GET', body: init?.body });
+            const pathUrl = String(url);
+            if (pathUrl === workerDomainsUrl('acct_test') && (init?.method ?? 'GET') === 'GET') {
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({
+                        success: true,
+                        result: [{ id: 'dom-existing', hostname: 'api.example.com', service: 'other-worker', zone_id: 'zone_api' }],
+                        errors: [],
+                    }),
+                };
+            }
+            if (pathUrl === workerDomainsUrl('acct_test') && init?.method === 'PUT') {
+                const payload = JSON.parse(String(init.body));
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({
+                        success: true,
+                        result: {
+                            id: payload.hostname === 'www.example.com' ? 'dom-new' : 'dom-existing',
+                            hostname: payload.hostname,
+                            service: payload.service,
+                            zone_id: payload.zone_id,
+                        },
+                        errors: [],
+                    }),
+                };
+            }
+            throw new Error(`unexpected domain fetch ${pathUrl} ${init?.method ?? 'GET'}`);
+        },
+    });
+
+    assert.deepEqual(domainSync.created, ['www.example.com']);
+    assert.deepEqual(domainSync.updated, ['api.example.com']);
+    assert.deepEqual(domainSync.unchanged, []);
+    assert.equal(domainCalls.length, 3);
 
     const routeCalls = [];
     const routeSync = await syncWorkerRoutes({
