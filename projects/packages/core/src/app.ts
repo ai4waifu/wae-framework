@@ -175,21 +175,27 @@ export function createApp<Env = unknown, Services extends Record<string, unknown
             const method = request.method.toUpperCase();
             let matched: Route<Env, Services> | undefined;
             let params: Record<string, string> = {};
+            let pathMatched = false;
 
             for (const candidate of routes) {
-                if (candidate.method !== '*' && candidate.method !== method) continue;
                 const found = matchPath(candidate.path, url.pathname);
-                if (found) {
-                    matched = candidate;
-                    params = found;
-                    break;
+                if (!found) continue;
+                if (candidate.method !== '*' && candidate.method !== method) {
+                    pathMatched = true;
+                    continue;
                 }
+                matched = candidate;
+                params = found;
+                break;
             }
 
             const ctx = createContext(request, params, env, services, exec, signal, platform);
 
             const runHandler = async (): Promise<Response> => {
                 if (!matched) {
+                    if (pathMatched) {
+                        return new Response('Method Not Allowed', { status: 405 });
+                    }
                     return new Response('Not Found', { status: 404 });
                 }
                 return matched.handler(ctx);
