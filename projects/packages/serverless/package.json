@@ -30,6 +30,11 @@
             "types": "./dist/cloudflare/websocket.d.ts",
             "import": "./dist/cloudflare/websocket.js",
             "default": "./dist/cloudflare/websocket.js"
+        },
+        "./cloudflare/publish": {
+            "types": "./dist/cloudflare/publish.d.ts",
+            "import": "./dist/cloudflare/publish.js",
+            "default": "./dist/cloudflare/publish.js"
         }
     },
     "files": [
