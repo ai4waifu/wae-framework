@@ -113,6 +113,12 @@ jobs:
             - name: Server bundle smoke
               run: pnpm run check:server-bundle
 
+            - name: Deploy target dependency validation
+              run: pnpm run check:deploy-target-deps
+
+            - name: Wrangler scaffold smoke
+              run: pnpm run check:wrangler
+
     host-deno:
         name: Deno host smoke
         runs-on: ubuntu-latest

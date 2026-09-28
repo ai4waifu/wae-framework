@@ -48,7 +48,10 @@ function assertTarget(dir, server) {
         assert.ok(fs.existsSync(path.join(dir, 'src/server/worker.ts')));
         assert.ok(!fs.existsSync(path.join(dir, 'src/server/node.ts')));
         assert.ok(!fs.existsSync(path.join(dir, 'src/server/deno.ts')));
+        const wrangler = fs.readFileSync(path.join(dir, 'wrangler.toml'), 'utf8');
+        assert.match(wrangler, /main = "src\/server\/worker\.ts"/);
     } else {
+        assert.ok(!fs.existsSync(path.join(dir, 'wrangler.toml')));
         assert.ok(deps.includes('@wae/server'));
         assert.ok(!deps.includes('@wae/serverless'));
         assert.ok(!fs.existsSync(path.join(dir, 'src/server/worker.ts')));
