@@ -139,6 +139,17 @@ assert.equal(denoResponse.status, 101);
 denoPair[0].send('hello');
 assert.deepEqual(denoPair[1].sent, ['echo:hello']);
 
-assert.throws(() => upgradeNodeWebSocket(), /not wired yet/);
+const nodePair = new MockWebSocketPair();
+const nodeResponse = upgradeNodeWebSocket(websocketRequest('http://node/ws'), wsApp, requestContext, {
+    upgradeWebSocket(request) {
+        const pair = new MockWebSocketPair();
+        nodePair[0] = pair[0];
+        nodePair[1] = pair[1];
+        return { socket: pair[1], response: { status: 101, webSocket: pair[0] } };
+    },
+});
+assert.equal(nodeResponse.status, 101);
+nodePair[0].send('node');
+assert.deepEqual(nodePair[1].sent, ['echo:node']);
 
 console.log('host-websocket: ok');
