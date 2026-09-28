@@ -56,6 +56,13 @@ export type WaeConfig = {
         bindings?: Array<Record<string, unknown>>;
         /** HTTP route patterns bound to the published script (`syncWorkerRoutes`). */
         routes?: Array<{ pattern: string }>;
+        /** Custom domains attached to the published script (`syncWorkerCustomDomains`). */
+        customDomains?: Array<{
+            hostname: string;
+            zoneId?: string;
+            zoneName?: string;
+            overrideExistingOrigin?: boolean;
+        }>;
     };
     server?: {
         entry?: string;
@@ -114,6 +121,7 @@ export function defineConfig(config: WaeConfig): WaeConfig {
                   compatibilityDate: config.cloudflare.compatibilityDate,
                   bindings: config.cloudflare.bindings,
                   routes: config.cloudflare.routes,
+                  customDomains: config.cloudflare.customDomains,
               }
             : undefined,
         server: config.server

@@ -2,6 +2,7 @@
 
 import type { WaePublishOptions } from '@wae/commander';
 import { publishWorkerBundle } from '@wae/serverless/cloudflare/publish';
+import { syncWorkerCustomDomains } from '@wae/serverless/cloudflare/domains';
 import { syncWorkerRoutes } from '@wae/serverless/cloudflare/routes';
 import { resolveDeployTarget } from './deploy-target.js';
 import { loadWaeConfig } from './load-config.js';
@@ -43,6 +44,25 @@ export async function cmdPublish(options: WaePublishOptions): Promise<void> {
         compatibilityDate: config.cloudflare?.compatibilityDate,
         bindings: config.cloudflare?.bindings,
     });
+
+    const customDomains = config.cloudflare?.customDomains;
+    if (customDomains?.length) {
+        const domainSync = await syncWorkerCustomDomains({
+            accountId: credentials.accountId,
+            apiToken: credentials.apiToken,
+            scriptName,
+            domains: customDomains,
+        });
+        if (domainSync.created.length) {
+            console.log(`[wae publish] customDomains created=${domainSync.created.join(',')}`);
+        }
+        if (domainSync.updated.length) {
+            console.log(`[wae publish] customDomains updated=${domainSync.updated.join(',')}`);
+        }
+        if (domainSync.unchanged.length) {
+            console.log(`[wae publish] customDomains unchanged=${domainSync.unchanged.join(',')}`);
+        }
+    }
 
     const routes = config.cloudflare?.routes;
     if (routes?.length) {
