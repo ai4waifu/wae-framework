@@ -5,7 +5,6 @@
     "dependencies": {
         "@wae/client": "workspace:*",
         "@wae/core": "workspace:*",
-        "@wae/server": "workspace:*",
         "@wae/serverless": "workspace:*"
     },
     "devDependencies": {
