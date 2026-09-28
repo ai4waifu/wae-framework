@@ -64,7 +64,7 @@ See [`@wae/wae`](projects/packages/wae/readme.md) for details.
 ## Choosing by target
 
 - **Browser frontend only**: `@wae/client` + optional adapter; `wae run` starts Vite (no `@wae/wae-*` platform package).
-- **Node HTTP service**: `@wae/core` + `@wae/server/node` (`serve` is still a skeleton listener).
+- **Node HTTP service**: `@wae/core` + `@wae/server/node` (`serve` listens via `node:http`).
 - **Deno**: `@wae/core` + `@wae/server/deno`.
 - **Cloudflare Worker**: `@wae/core` + `@wae/serverless/cloudflare` (`worker(app)`).
 - **Wasm client**: `@wae/wae-unknown-wasm32`; build/load details in that package README (placeholder API today).

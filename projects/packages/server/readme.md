@@ -18,7 +18,8 @@ const app = createApp({
   routes: [route("GET", "/hello", (ctx) => ctx.json({ ok: true }))],
 });
 
-await serve(app, { port: 3000 });
+const handle = await serve(app, { port: 3000 });
+await handle.close();
 ```
 
 ## Deno
