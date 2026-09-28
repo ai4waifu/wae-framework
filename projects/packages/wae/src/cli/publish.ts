@@ -1,6 +1,7 @@
 /** `wae publish` — upload built Worker via Cloudflare Scripts API. */
 
 import type { WaePublishOptions } from '@wae/commander';
+import { resolveWorkerBindings } from '@wae/serverless/cloudflare/bindings';
 import { publishWorkerBundle } from '@wae/serverless/cloudflare/publish';
 import { syncWorkerCustomDomains } from '@wae/serverless/cloudflare/domains';
 import { syncWorkerRoutes } from '@wae/serverless/cloudflare/routes';
@@ -35,6 +36,7 @@ export async function cmdPublish(options: WaePublishOptions): Promise<void> {
     const artifact = loadPublishArtifact(productRoot);
     const credentials = resolveCloudflareCredentials(config);
     const scriptName = config.cloudflare?.scriptName ?? artifact.manifest.name;
+    const bindings = config.cloudflare?.bindings?.length ? resolveWorkerBindings(config.cloudflare.bindings) : undefined;
     const result = await publishWorkerBundle({
         accountId: credentials.accountId,
         apiToken: credentials.apiToken,
@@ -42,7 +44,7 @@ export async function cmdPublish(options: WaePublishOptions): Promise<void> {
         moduleFile: artifact.moduleFile,
         scriptBody: artifact.scriptBody,
         compatibilityDate: config.cloudflare?.compatibilityDate,
-        bindings: config.cloudflare?.bindings,
+        bindings,
     });
 
     const customDomains = config.cloudflare?.customDomains;

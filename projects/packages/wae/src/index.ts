@@ -1,5 +1,6 @@
 /** @wae/wae — Node CLI 与工程编排（不含 Rust runtime；不替代框架 CLI）。 */
 
+import type { CloudflareBindingInput } from '@wae/serverless/cloudflare/bindings';
 import type {
     ClientPlatformId,
     WaeProductDownloadPolicy,
@@ -53,7 +54,8 @@ export type WaeConfig = {
         apiToken?: string;
         scriptName?: string;
         compatibilityDate?: string;
-        bindings?: Array<Record<string, unknown>>;
+        /** Typed binding specs (`kind`) or raw API wire records (`type`). */
+        bindings?: CloudflareBindingInput[];
         /** HTTP route patterns bound to the published script (`syncWorkerRoutes`). */
         routes?: Array<{ pattern: string }>;
         /** Custom domains attached to the published script (`syncWorkerCustomDomains`). */
