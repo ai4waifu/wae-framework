@@ -9,6 +9,7 @@ import type { ClientPlatformId } from '@wae/types';
 import type { WaeConfig } from '../index.js';
 import { resolveProductMeta, writeProductManifest } from '../product/manifest.js';
 import { bundleServerEntry } from './build-server.js';
+import { writeWranglerToml } from './build-wrangler.js';
 import { loadWaeConfig } from './load-config.js';
 import { isNativeShellPlatform, platformPackageName, resolvePlatformId } from './platform.js';
 import { hasViteConfig, loadFrameworkPlugins, resolveVite } from './vite-helpers.js';
@@ -28,7 +29,7 @@ export async function cmdBuild(flags: WaeBuildOptions): Promise<void> {
     console.log(`[wae build] out=${path.relative(cwd, outDir) || outDir}`);
 
     await buildFrontend(cwd, config, path.join(outDir, meta.frontendDir));
-    await bundleServerEntry(cwd, config, outDir);
+    const serverBundle = await bundleServerEntry(cwd, config, outDir);
 
     if (isNativeShellPlatform(platformId)) {
         const nativeDest = path.join(outDir, meta.nativeRelativePath);
@@ -37,7 +38,20 @@ export async function cmdBuild(flags: WaeBuildOptions): Promise<void> {
 
     const manifestPath = writeProductManifest(outDir, platformId, meta, config, {
         includeNative: isNativeShellPlatform(platformId),
+        server: serverBundle
+            ? {
+                  deployTarget: serverBundle.deployTarget,
+                  entry: path.relative(outDir, serverBundle.entryFile).replaceAll('\\', '/'),
+              }
+            : undefined,
     });
+    if (serverBundle?.deployTarget === 'cloudflare') {
+        const wranglerPath = writeWranglerToml(outDir, {
+            name: meta.name,
+            main: path.relative(outDir, serverBundle.entryFile).replaceAll('\\', '/'),
+        });
+        console.log(`[wae build] wrangler → ${path.relative(cwd, wranglerPath) || wranglerPath}`);
+    }
     console.log(`[wae build] manifest=${path.relative(cwd, manifestPath) || manifestPath}`);
 
     if (isNativeShellPlatform(platformId)) {

@@ -2,7 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import type { ClientPlatformId, WaeProductManifest } from '@wae/types';
+import type { ClientPlatformId, WaeProductManifest, WaeProductServerBundle } from '@wae/types';
 import { isNativeShellPlatform, platformNativeLibFile, WAE_PRODUCT_MANIFEST } from '@wae/types';
 import type { WaeConfig } from '../index.js';
 
@@ -45,7 +45,7 @@ export function writeProductManifest(
     platform: ClientPlatformId,
     meta: ResolvedProductMeta,
     config: WaeConfig,
-    options?: { includeNative?: boolean },
+    options?: { includeNative?: boolean; server?: WaeProductServerBundle },
 ): string {
     const manifest: WaeProductManifest = {
         schemaVersion: 1,
@@ -57,6 +57,9 @@ export function writeProductManifest(
     };
     if (options?.includeNative) {
         manifest.nativePath = meta.nativeRelativePath;
+    }
+    if (options?.server) {
+        manifest.server = options.server;
     }
     const manifestPath = path.join(outDir, WAE_PRODUCT_MANIFEST);
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 4)}\n`, 'utf8');
