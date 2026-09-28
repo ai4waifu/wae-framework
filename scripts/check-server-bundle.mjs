@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { workspaceAliases } from './workspace-aliases.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const packagesRoot = path.join(root, 'projects/packages');
@@ -34,20 +35,6 @@ function runCreate(cwd, name, server) {
     if (r.status !== 0) process.exit(r.status ?? 1);
 }
 
-function workspaceAliases(target) {
-    const alias = {
-        '@wae/core': path.join(packagesRoot, 'core/dist/index.js'),
-    };
-    if (target === 'cloudflare') {
-        alias['@wae/serverless/cloudflare'] = path.join(packagesRoot, 'serverless/dist/cloudflare/index.js');
-    } else if (target === 'node') {
-        alias['@wae/server/node'] = path.join(packagesRoot, 'server/dist/node/index.js');
-    } else {
-        alias['@wae/server/deno'] = path.join(packagesRoot, 'server/dist/deno/index.js');
-    }
-    return alias;
-}
-
 buildPackages();
 
 const { defineConfig } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/index.js')).href);
@@ -61,7 +48,7 @@ try {
         const appDir = path.join(tmp, name);
         const outDir = path.join(appDir, 'dist-test');
         const result = await bundleServerEntry(appDir, defineConfig({ deployTarget: target }), outDir, {
-            alias: workspaceAliases(target),
+            alias: workspaceAliases(packagesRoot, target),
         });
         assert.ok(result);
         assert.equal(result.deployTarget, target);

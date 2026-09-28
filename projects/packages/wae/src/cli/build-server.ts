@@ -61,6 +61,7 @@ export async function bundleServerEntry(
         format: 'esm',
         target: deployTarget === 'cloudflare' ? 'es2022' : 'node20',
         packages: options.alias ? undefined : 'external',
+        external: deployTarget === 'node' ? ['ws'] : undefined,
         alias: options.alias,
         absWorkingDir: cwd,
         logLevel: 'silent',
