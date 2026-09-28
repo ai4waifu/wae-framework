@@ -56,4 +56,4 @@ createApp({ routes? })
 Production declares full routes / middleware and connects via `@wae/server/node` or `@wae/serverless/cloudflare`. This example stops at
 platform-agnostic `createApp`.
 
-Dependencies (this example): `@wae/server`.
+Dependencies (this example): `@wae/core`.
