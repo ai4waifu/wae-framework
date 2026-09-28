@@ -18,8 +18,16 @@ export type WaeBuildOptions = {
     extraArgs: string[];
 };
 
+export type WaeDeployOptions = {
+    platform?: string;
+    outDir?: string;
+    wranglerBin?: string;
+    extraArgs: string[];
+};
+
 export type RunDevHandler = (options: WaeRunOptions, mode: 'run' | 'dev') => Promise<void>;
 export type BuildHandler = (options: WaeBuildOptions) => Promise<void>;
+export type DeployHandler = (options: WaeDeployOptions) => Promise<void>;
 export type CreateHandler = (options: WaeCreateOptions) => Promise<void>;
 export type StubHandler = (cmd: string, args: string[]) => void | Promise<void>;
 
@@ -33,6 +41,7 @@ export type WaeCreateOptions = {
 export type WaeCommandHandlers = {
     run?: RunDevHandler;
     build?: BuildHandler;
+    deploy?: DeployHandler;
     create?: CreateHandler;
     stub?: StubHandler;
 };
@@ -87,6 +96,22 @@ export function createWaeProgram(handlers: WaeCommandHandlers = {}): Command {
         });
 
     program
+        .command('deploy')
+        .description('Deploy built product to configured host (cloudflare: wrangler deploy)')
+        .option('-p, --platform <id>', 'client platform id (web, win32-x64, …)')
+        .option('--out-dir <dir>', 'override product output base directory')
+        .option('--wrangler-bin <path>', 'wrangler executable (default: wrangler)')
+        .allowUnknownOption(true)
+        .action(async (_opts, cmd) => {
+            const options = readDeployOptions(cmd);
+            if (handlers.deploy) {
+                await handlers.deploy(options);
+                return;
+            }
+            (handlers.stub ?? defaultStub)('deploy', options.extraArgs);
+        });
+
+    program
         .command('create')
         .description('Create a new app from template (single deploy target host)')
         .argument('[name]', 'project directory name')
@@ -138,6 +163,16 @@ export function readBuildOptions(cmd: Command): WaeBuildOptions {
     return {
         platform: opts.platform,
         outDir: opts.outDir,
+        extraArgs: cmd.args.slice(),
+    };
+}
+
+export function readDeployOptions(cmd: Command): WaeDeployOptions {
+    const opts = cmd.opts() as { platform?: string; outDir?: string; wranglerBin?: string };
+    return {
+        platform: opts.platform,
+        outDir: opts.outDir,
+        wranglerBin: opts.wranglerBin,
         extraArgs: cmd.args.slice(),
     };
 }
