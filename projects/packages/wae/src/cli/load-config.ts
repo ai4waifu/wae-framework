@@ -6,6 +6,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import * as esbuild from 'esbuild';
 import { defineConfig, type WaeConfig } from '../index.js';
+import { validateDeployTargetDependencies } from './deploy-target.js';
 
 const CONFIG_NAMES = ['wae.config.ts', 'wae.config.mts', 'wae.config.js', 'wae.config.mjs', 'wae.config.cjs'];
 
@@ -31,11 +32,11 @@ export async function loadWaeConfig(cwd: string): Promise<LoadedConfig> {
     const ext = path.extname(configPath);
     if (ext === '.js' || ext === '.mjs') {
         const mod = await import(pathToFileURL(configPath).href);
-        return { path: configPath, config: normalize(mod) };
+        return finalize(cwd, configPath, mod);
     }
     if (ext === '.cjs') {
         const require = createRequire(import.meta.url);
-        return { path: configPath, config: normalize(require(configPath)) };
+        return finalize(cwd, configPath, require(configPath));
     }
 
     const cacheDir = path.join(cwd, 'node_modules', '.cache', 'wae');
@@ -54,7 +55,7 @@ export async function loadWaeConfig(cwd: string): Promise<LoadedConfig> {
             logLevel: 'silent',
         });
         const mod = await import(pathToFileURL(outfile).href);
-        return { path: configPath, config: normalize(mod) };
+        return finalize(cwd, configPath, mod);
     } finally {
         try {
             fs.unlinkSync(outfile);
@@ -70,4 +71,10 @@ function normalize(mod: unknown): WaeConfig {
         throw new Error('wae.config 必须 default export 一个配置对象（建议用 defineConfig）');
     }
     return defineConfig(raw as WaeConfig);
+}
+
+function finalize(cwd: string, configPath: string, mod: unknown): LoadedConfig {
+    const config = normalize(mod);
+    validateDeployTargetDependencies(cwd, config);
+    return { path: configPath, config };
 }

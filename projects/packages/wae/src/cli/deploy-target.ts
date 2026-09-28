@@ -1,5 +1,7 @@
 /** Single-host deploy target materialization for `wae create` and config normalization. */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import type { ServerAdapterId } from '../index.js';
 
 export const DEPLOY_TARGETS = ['node', 'deno', 'cloudflare'] as const;
@@ -51,6 +53,54 @@ export function hostDependencies(target: DeployTarget): Record<string, string> {
 export function hostEntriesToExclude(target: DeployTarget): Set<string> {
     const keep = HOST_ENTRY_BY_TARGET[target];
     return new Set(ALL_HOST_ENTRIES.filter((entry) => entry !== keep));
+}
+
+export function readPackageDependencies(cwd: string): Record<string, string> {
+    const pkgPath = path.join(cwd, 'package.json');
+    if (!fs.existsSync(pkgPath)) return {};
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as {
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+    };
+    return { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
+}
+
+/** Ensure `package.json` host deps match `deployTarget` when both are present. */
+export function validateDeployTargetDependencies(
+    cwd: string,
+    config: {
+        deployTarget?: ServerAdapterId;
+        server?: { adapter?: ServerAdapterId };
+        platform?: { server?: ServerAdapterId };
+    },
+): void {
+    const target = resolveDeployTarget(config);
+    if (!target) return;
+
+    const deps = readPackageDependencies(cwd);
+    if (Object.keys(deps).length === 0) return;
+
+    const hasServer = '@wae/server' in deps;
+    const hasServerless = '@wae/serverless' in deps;
+
+    if (hasServer && hasServerless) {
+        throw new Error('package.json must not depend on both @wae/server and @wae/serverless');
+    }
+    if (target === 'cloudflare') {
+        if (hasServer) {
+            throw new Error('deployTarget cloudflare requires @wae/serverless, not @wae/server');
+        }
+        if (!hasServerless) {
+            throw new Error('deployTarget cloudflare requires @wae/serverless in package.json');
+        }
+        return;
+    }
+    if (hasServerless) {
+        throw new Error(`deployTarget ${target} requires @wae/server, not @wae/serverless`);
+    }
+    if (!hasServer) {
+        throw new Error(`deployTarget ${target} requires @wae/server in package.json`);
+    }
 }
 
 export function patchWaeConfigSource(source: string, target: DeployTarget): string {
