@@ -22,6 +22,14 @@ export type {
     WaeProductUpdateConfig,
 } from './product.js';
 export { WAE_PRODUCT_MANIFEST } from './product.js';
+export type {
+    WaeWebSocket,
+    WaeWebSocketCloseEvent,
+    WaeWebSocketData,
+    WaeWebSocketEvent,
+    WaeWebSocketListener,
+    WaeWebSocketMessageEvent,
+} from './websocket.js';
 
 export type NodeId = string;
 export type RequestId = string;
