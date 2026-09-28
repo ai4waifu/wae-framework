@@ -26,6 +26,9 @@ function buildPackages() {
 
 buildPackages();
 
+const { resolveWorkerBindings } = await import(
+    pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/bindings.js')).href
+);
 const { publishWorkerBundle, workerScriptUploadUrl } = await import(
     pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/publish.js')).href
 );
@@ -67,6 +70,17 @@ try {
     const resolved = resolveProductDir(tmp, {}, defineConfig({ deployTarget: 'cloudflare', product: { outDir: 'dist' } }));
     assert.equal(resolved, productRoot);
 
+    const resolvedBindings = resolveWorkerBindings([
+        { kind: 'plain_text', name: 'MESSAGE', text: 'hello' },
+        { kind: 'kv_namespace', name: 'KV', namespaceId: 'ns_demo' },
+        { type: 'd1', name: 'DB', id: 'd1_demo' },
+    ]);
+    assert.deepEqual(resolvedBindings, [
+        { type: 'plain_text', name: 'MESSAGE', text: 'hello' },
+        { type: 'kv_namespace', name: 'KV', namespace_id: 'ns_demo' },
+        { type: 'd1', name: 'DB', id: 'd1_demo' },
+    ]);
+
     let capturedUrl = '';
     let capturedMethod = '';
     let capturedAuth = '';
@@ -77,6 +91,7 @@ try {
         scriptName: 'demo-worker',
         moduleFile: artifact.moduleFile,
         scriptBody: artifact.scriptBody,
+        bindings: resolvedBindings,
         fetch: async (url, init) => {
             capturedUrl = String(url);
             capturedMethod = init?.method ?? 'GET';
@@ -99,6 +114,11 @@ try {
     assert.equal(capturedUrl, workerScriptUploadUrl('acct_test', 'demo-worker'));
     assert.equal(capturedAuth, 'Bearer token_test');
     assert.ok(capturedForm instanceof FormData);
+    const metadataPart = capturedForm.get('metadata');
+    assert.ok(metadataPart instanceof Blob);
+    const metadata = JSON.parse(await metadataPart.text());
+    assert.deepEqual(metadata.bindings, resolvedBindings);
+    assert.equal(metadata.main_module, 'worker.mjs');
     assert.equal(result.scriptName, 'demo-worker');
     assert.equal(result.moduleFile, 'worker.mjs');
     assert.equal(result.etag, 'etag-demo');
