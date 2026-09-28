@@ -16,8 +16,9 @@ CLI, most adapters, and platform shells remain skeletons—do not treat them as 
 App config (@wae/wae · defineConfig)
   ├─ frontend / client (@wae/client)
   │   └─ adapter: Vue / React / Svelte / Solid (optional)
-  ├─ backend / server (@wae/server)
-  │   └─ serverless → Node / Deno / Cloudflare
+  ├─ backend (@wae/core createApp)
+  │   ├─ @wae/server → Node / Deno
+  │   └─ @wae/serverless → Cloudflare Workers
   ├─ communication (@wae/types · @wae/core · @wae/protocol)
   └─ host / platform
       ├─ @wae/wae-unknown-wasm32
@@ -30,9 +31,9 @@ App config (@wae/wae · defineConfig)
 | **client**                  | Frontend runtime: `createClient`, HTTP/action, session, bridge         | Not a UI framework                                   |
 | **adapter**                 | Connects an existing `WaeClient` to Vue/React/Svelte/Solid             | Not a second runtime                                 |
 | **bundler**                 | Default Vite (`wae run` starts it); set `custom` to swap Webpack, etc. | Not WAE core; swappable                              |
-| **server**                  | Platform-agnostic `fetch` app and routing                              | Not the Node process itself                          |
-| **serverless**              | Adapts server to `(request, env, ctx) => Response`                     | Not a specific cloud vendor API                      |
-| **server-\***               | Binds Node / Deno / Cloudflare                                         | Must not assume filesystem/timers across runtimes    |
+| **core**                    | Shared `createApp` / routes / action / RPC HTTP                        | Not a process or cloud binding                       |
+| **server**                  | Node.js / Deno host entries (`/node`, `/deno`)                         | Not Cloudflare Workers                               |
+| **serverless**              | Per-request edge hosts (`/cloudflare`)                                 | Must not depend on `@wae/server`                     |
 | **protocol / types / core** | Cross-end messages and shared primitives                               | Not business handlers                                |
 | **host (Rust)**             | Local shell ↔ frontend bridge                                          | Not a remote business backend                        |
 | **platform (`@wae/wae-*`)** | Target OS/runtime distribution packages                                | Not ordinary business deps (pulled via CLI optional) |
@@ -99,6 +100,7 @@ await app.fetch(new Request("http://x/hello")); // → JSON
 
 ```bash
 pnpm run check:boundary
+pnpm run check:host-http
 pnpm run check:ts
 pnpm exec wae help
 ```
