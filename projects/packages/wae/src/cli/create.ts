@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { WaeCreateOptions } from '@wae/commander';
+import { writeWranglerToml } from './build-wrangler.js';
 import {
     hostDependencies,
     hostEntriesToExclude,
@@ -90,6 +91,9 @@ export async function cmdCreate(options: WaeCreateOptions): Promise<void> {
     copyTemplateTree(templateRoot, templateRoot, targetDir, excludeHostEntries);
     writePackageJson(targetDir, name, target);
     writeWaeConfig(targetDir, target);
+    if (target === 'cloudflare') {
+        writeWranglerToml(targetDir, { name, main: 'src/server/worker.ts' });
+    }
 
     console.log(`[wae] created ${targetDir} (deployTarget=${target})`);
 }
