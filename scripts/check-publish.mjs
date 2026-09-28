@@ -39,6 +39,12 @@ const { syncWorkerRoutes, workerRoutesListUrl, workerRouteItemUrl } = await impo
     pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/routes.js')).href
 );
 const { loadPublishArtifact } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/cli/publish-artifact.js')).href);
+const {
+    loadServerBundleArtifact,
+    materializeServerPublish,
+    SERVER_PUBLISH_MANIFEST,
+    serverPublishCommand,
+} = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/cli/publish-server.js')).href);
 const { resolveProductDir } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/cli/resolve-product-dir.js')).href);
 const { defineConfig } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/index.js')).href);
 
@@ -222,6 +228,38 @@ try {
     assert.deepEqual(routeSync.updated, ['api.example.com/*']);
     assert.deepEqual(routeSync.unchanged, []);
     assert.equal(routeCalls.length, 3);
+
+    for (const target of ['node', 'deno']) {
+        const serverProductRoot = path.join(tmp, `dist-${target}`);
+        const entry = target === 'node' ? 'server/node.mjs' : 'server/deno.mjs';
+        fs.mkdirSync(path.join(serverProductRoot, 'server'), { recursive: true });
+        fs.writeFileSync(
+            path.join(serverProductRoot, 'wae-product.json'),
+            `${JSON.stringify(
+                {
+                    schemaVersion: 1,
+                    name: `demo-${target}`,
+                    version: '0.0.0',
+                    platform: 'web',
+                    server: { deployTarget: target, entry },
+                },
+                null,
+                4,
+            )}\n`,
+            'utf8',
+        );
+        fs.writeFileSync(path.join(serverProductRoot, entry), 'export default {}\n', 'utf8');
+
+        const serverArtifact = loadServerBundleArtifact(serverProductRoot);
+        assert.equal(serverArtifact.deployTarget, target);
+        assert.equal(serverArtifact.entryFile, entry);
+        const publishManifestPath = materializeServerPublish(serverProductRoot, serverArtifact);
+        assert.equal(publishManifestPath, path.join(serverProductRoot, 'publish', SERVER_PUBLISH_MANIFEST));
+        const publishManifest = JSON.parse(fs.readFileSync(publishManifestPath, 'utf8'));
+        assert.equal(publishManifest.deployTarget, target);
+        assert.equal(publishManifest.entry, entry);
+        assert.equal(publishManifest.command, serverPublishCommand(target, entry));
+    }
 
     console.log('check-publish: ok');
 } finally {
