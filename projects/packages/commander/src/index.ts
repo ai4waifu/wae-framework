@@ -18,8 +18,15 @@ export type WaeBuildOptions = {
     extraArgs: string[];
 };
 
+export type WaePublishOptions = {
+    platform?: string;
+    outDir?: string;
+    extraArgs: string[];
+};
+
 export type RunDevHandler = (options: WaeRunOptions, mode: 'run' | 'dev') => Promise<void>;
 export type BuildHandler = (options: WaeBuildOptions) => Promise<void>;
+export type PublishHandler = (options: WaePublishOptions) => Promise<void>;
 export type CreateHandler = (options: WaeCreateOptions) => Promise<void>;
 export type StubHandler = (cmd: string, args: string[]) => void | Promise<void>;
 
@@ -33,6 +40,7 @@ export type WaeCreateOptions = {
 export type WaeCommandHandlers = {
     run?: RunDevHandler;
     build?: BuildHandler;
+    publish?: PublishHandler;
     create?: CreateHandler;
     stub?: StubHandler;
 };
@@ -87,6 +95,20 @@ export function createWaeProgram(handlers: WaeCommandHandlers = {}): Command {
         });
 
     program
+        .command('publish')
+        .description('Publish built Cloudflare Worker via Workers Scripts API')
+        .option('-p, --platform <id>', 'client platform id (web, win32-x64, …)')
+        .option('--out-dir <dir>', 'override product output base directory')
+        .action(async (_opts, cmd) => {
+            const options = readPublishOptions(cmd);
+            if (handlers.publish) {
+                await handlers.publish(options);
+                return;
+            }
+            (handlers.stub ?? defaultStub)('publish', options.extraArgs);
+        });
+
+    program
         .command('create')
         .description('Create a new app from template (single deploy target host)')
         .argument('[name]', 'project directory name')
@@ -134,6 +156,15 @@ export function readRunOptions(cmd: Command): WaeRunOptions {
 }
 
 export function readBuildOptions(cmd: Command): WaeBuildOptions {
+    const opts = cmd.opts() as { platform?: string; outDir?: string };
+    return {
+        platform: opts.platform,
+        outDir: opts.outDir,
+        extraArgs: cmd.args.slice(),
+    };
+}
+
+export function readPublishOptions(cmd: Command): WaePublishOptions {
     const opts = cmd.opts() as { platform?: string; outDir?: string };
     return {
         platform: opts.platform,

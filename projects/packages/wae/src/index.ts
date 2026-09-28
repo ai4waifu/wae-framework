@@ -47,6 +47,14 @@ export type WaeConfig = {
     };
     /** Single backend host selection (node, deno, cloudflare). Mirrors `server.adapter`. */
     deployTarget?: ServerAdapterId;
+    /** Cloudflare Workers publish credentials and script options (`wae publish`). */
+    cloudflare?: {
+        accountId?: string;
+        apiToken?: string;
+        scriptName?: string;
+        compatibilityDate?: string;
+        bindings?: Array<Record<string, unknown>>;
+    };
     server?: {
         entry?: string;
         adapter?: ServerAdapterId;
@@ -96,6 +104,15 @@ export function defineConfig(config: WaeConfig): WaeConfig {
             devUrl: config.frontend?.devUrl,
         },
         deployTarget,
+        cloudflare: config.cloudflare
+            ? {
+                  accountId: config.cloudflare.accountId,
+                  apiToken: config.cloudflare.apiToken,
+                  scriptName: config.cloudflare.scriptName,
+                  compatibilityDate: config.cloudflare.compatibilityDate,
+                  bindings: config.cloudflare.bindings,
+              }
+            : undefined,
         server: config.server
             ? {
                   entry: config.server.entry,

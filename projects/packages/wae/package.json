@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@wae/commander": "workspace:*",
+        "@wae/serverless": "workspace:*",
         "@wae/types": "workspace:*",
         "esbuild": "^0.25.0"
     },
