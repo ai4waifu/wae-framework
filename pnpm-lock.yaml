@@ -20,6 +20,15 @@ importers:
       '@doki-land/nifty':
         specifier: ^0.0.6
         version: 0.0.6
+      '@wae/core':
+        specifier: workspace:*
+        version: link:projects/packages/core
+      '@wae/server':
+        specifier: workspace:*
+        version: link:projects/packages/server
+      '@wae/serverless':
+        specifier: workspace:*
+        version: link:projects/packages/serverless
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -645,6 +654,9 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.20.4
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
