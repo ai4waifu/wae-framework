@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * host-http — shared HTTP app contract across core fetch, Worker worker(), and Node serve().
+ * host-http — shared HTTP app contract across core fetch, Worker worker(), Deno handler, and Node serve().
  */
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createApp, route } from '@wae/core';
+import { serve as denoServe } from '@wae/server/deno';
 import { serve } from '@wae/server/node';
 import { worker } from '@wae/serverless/cloudflare';
 
@@ -30,6 +31,11 @@ function createFixtureApp() {
         routes: [
             route('GET', '/health', (ctx) => ctx.json({ ok: true })),
             route('GET', '/users/:id', (ctx) => ctx.json({ id: ctx.request.params.id })),
+            route('GET', '/signal', (ctx) => ctx.json({ aborted: ctx.signal.aborted })),
+            route('GET', '/bg', (ctx) => {
+                ctx.waitUntil(Promise.resolve('bg'));
+                return ctx.json({ bg: true });
+            }),
         ],
         middleware: [
             async (_ctx, next) => {
@@ -59,6 +65,19 @@ async function testCoreFetch() {
 
     const missing = await app.fetch(new Request('http://test/missing'));
     assert.equal(missing.status, 404);
+
+    const wrongMethod = await app.fetch(new Request('http://test/health', { method: 'POST' }));
+    assert.equal(wrongMethod.status, 405);
+
+    const ac = new AbortController();
+    ac.abort();
+    const signalRes = await app.fetch(new Request('http://test/signal'), {
+        env: {},
+        services: {},
+        signal: ac.signal,
+    });
+    assert.equal(signalRes.status, 200);
+    assert.deepEqual(await signalRes.json(), { aborted: true });
 }
 
 async function testWorkerExport() {
@@ -71,6 +90,27 @@ async function testWorkerExport() {
     assert.deepEqual(await res.json(), { ok: true });
     assert.deepEqual(order, ['mw-before', 'mw-after']);
     assert.equal(waitUntilTasks.length, 0);
+
+    const bg = await exported.fetch(new Request('http://worker/bg'), {}, { waitUntil: (task) => waitUntilTasks.push(task) });
+    assert.equal(bg.status, 200);
+    assert.deepEqual(await bg.json(), { bg: true });
+    assert.equal(waitUntilTasks.length, 1);
+    await waitUntilTasks[0];
+
+    const wrongMethod = await exported.fetch(new Request('http://worker/health', { method: 'POST' }), {}, { waitUntil: () => {} });
+    assert.equal(wrongMethod.status, 405);
+}
+
+async function testDenoFetchHandler() {
+    const { app } = createFixtureApp();
+    const fetchHandler = denoServe(app);
+
+    const health = await fetchHandler(new Request('http://deno/health'));
+    assert.equal(health.status, 200);
+    assert.deepEqual(await health.json(), { ok: true });
+
+    const wrongMethod = await fetchHandler(new Request('http://deno/health', { method: 'POST' }));
+    assert.equal(wrongMethod.status, 405);
 }
 
 async function testNodeServe() {
@@ -89,6 +129,9 @@ async function testNodeServe() {
 
         const missing = await fetch(`${base}/nope`);
         assert.equal(missing.status, 404);
+
+        const wrongMethod = await fetch(`${base}/health`, { method: 'POST' });
+        assert.equal(wrongMethod.status, 405);
     } finally {
         await handle.close();
     }
@@ -97,5 +140,6 @@ async function testNodeServe() {
 buildPackages();
 await testCoreFetch();
 await testWorkerExport();
+await testDenoFetchHandler();
 await testNodeServe();
 console.log('host-http: ok');
