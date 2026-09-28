@@ -145,6 +145,85 @@ async function testNodeServe(createApp, route, serve) {
     }
 }
 
+function createProtocolApp(createApp) {
+    return createApp({
+        actions: {
+            greet: (input) => ({ ok: true, name: input?.name ?? null }),
+        },
+        rpc: {
+            sum: (args) => {
+                const { a, b } = args;
+                return a + b;
+            },
+        },
+    });
+}
+
+async function testProtocol(createApp, worker, serve) {
+    const app = createProtocolApp(createApp);
+
+    const action = await app.fetch(
+        new Request('http://test/__wae/action/greet', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ name: 'alice' }),
+        }),
+    );
+    assert.equal(action.status, 200);
+    assert.deepEqual(await action.json(), { ok: true, name: 'alice' });
+
+    const rpc = await app.fetch(
+        new Request('http://test/__wae/rpc', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ id: 'r1', method: 'sum', args: { a: 2, b: 3 } }),
+        }),
+    );
+    assert.equal(rpc.status, 200);
+    assert.deepEqual(await rpc.json(), { id: 'r1', ok: true, body: 5 });
+
+    const missingRpc = await app.fetch(
+        new Request('http://test/__wae/rpc', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ id: 'r2', method: 'missing', args: null }),
+        }),
+    );
+    assert.equal(missingRpc.status, 200);
+    assert.deepEqual(await missingRpc.json(), {
+        id: 'r2',
+        ok: false,
+        body: { code: 'NotFound', message: 'unknown rpc method: missing' },
+    });
+
+    const exported = worker(app);
+    const workerAction = await exported.fetch(
+        new Request('http://worker/__wae/action/greet', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ name: 'bob' }),
+        }),
+        {},
+        { waitUntil: () => {} },
+    );
+    assert.equal(workerAction.status, 200);
+    assert.deepEqual(await workerAction.json(), { ok: true, name: 'bob' });
+
+    const handle = await serve(app, { hostname: '127.0.0.1', port: 0 });
+    try {
+        const base = `http://${handle.hostname}:${handle.port}`;
+        const nodeRpc = await fetch(`${base}/__wae/rpc`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ id: 'r3', method: 'sum', args: { a: 4, b: 6 } }),
+        });
+        assert.equal(nodeRpc.status, 200);
+        assert.deepEqual(await nodeRpc.json(), { id: 'r3', ok: true, body: 10 });
+    } finally {
+        await handle.close();
+    }
+}
+
 async function testNodeWaitUntilOnClose(createApp, route, serve) {
     let settled = false;
     const app = createApp({
@@ -188,4 +267,5 @@ await testWorkerExport(createApp, route, worker);
 await testDenoFetchHandler(createApp, route, denoServe);
 await testNodeServe(createApp, route, serve);
 await testNodeWaitUntilOnClose(createApp, route, serve);
+await testProtocol(createApp, worker, serve);
 console.log('host-http: ok');

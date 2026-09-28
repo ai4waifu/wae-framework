@@ -1,6 +1,9 @@
 /** Shared Fetch HTTP application model (platform-neutral). */
 
-import type { WaeError } from '@wae/types';
+import type { RpcRequest, RpcResponse, WaeError } from '@wae/types';
+
+export const WAE_ACTION_PATH_PREFIX = '/__wae/action/';
+export const WAE_RPC_PATH = '/__wae/rpc';
 
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 
@@ -54,6 +57,16 @@ export type WaeContext<Env = unknown, Services = Record<string, unknown>> = {
 
 export type RouteHandler<Env = unknown, Services = Record<string, unknown>> = (ctx: WaeContext<Env, Services>) => Promise<Response> | Response;
 
+export type ActionHandler<Env = unknown, Services = Record<string, unknown>> = (
+    input: unknown,
+    ctx: WaeContext<Env, Services>,
+) => Promise<JsonValue> | JsonValue;
+
+export type RpcMethodHandler<Env = unknown, Services = Record<string, unknown>> = (
+    args: unknown,
+    ctx: WaeContext<Env, Services>,
+) => Promise<unknown> | unknown;
+
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS' | '*';
 
 export type Route<Env = unknown, Services = Record<string, unknown>> = {
@@ -86,6 +99,8 @@ export type CreateAppOptions<Env = unknown, Services = Record<string, unknown>> 
     routes?: Route<Env, Services>[];
     services?: Services | ((env: Env) => Services);
     middleware?: Array<(ctx: WaeContext<Env, Services>, next: () => Promise<Response>) => Promise<Response> | Response>;
+    actions?: Record<string, ActionHandler<Env, Services>>;
+    rpc?: Record<string, RpcMethodHandler<Env, Services>>;
 };
 
 export interface WaeApp<Env = unknown, Services = Record<string, unknown>> {
@@ -128,6 +143,67 @@ function collectAllowedMethods<Env, Services>(pathname: string, routes: Route<En
 function methodNotAllowedResponse(allowedMethods: string[]): Response {
     const headers = allowedMethods.length > 0 ? { Allow: allowedMethods.join(', ') } : undefined;
     return new Response('Method Not Allowed', { status: 405, headers });
+}
+
+function buildProtocolRoutes<Env, Services>(options: CreateAppOptions<Env, Services>): Route<Env, Services>[] {
+    const routes: Route<Env, Services>[] = [];
+    const actions = options.actions;
+    const rpc = options.rpc;
+
+    if (actions && Object.keys(actions).length > 0) {
+        routes.push(
+            route('POST', `${WAE_ACTION_PATH_PREFIX}:name`, async (ctx) => {
+                const name = ctx.request.params.name;
+                const handler = actions[name];
+                if (!handler) {
+                    return new Response('Not Found', { status: 404 });
+                }
+                let input: unknown = null;
+                try {
+                    input = await ctx.request.raw.json();
+                } catch {
+                    input = null;
+                }
+                const output = await handler(input, ctx);
+                return ctx.json(output);
+            }),
+        );
+    }
+
+    if (rpc && Object.keys(rpc).length > 0) {
+        routes.push(
+            route('POST', WAE_RPC_PATH, async (ctx) => {
+                let body: RpcRequest;
+                try {
+                    body = (await ctx.request.raw.json()) as RpcRequest;
+                } catch {
+                    return Response.json({ code: 'InvalidRequest', message: 'invalid rpc body' }, { status: 400 });
+                }
+                if (typeof body?.id !== 'string' || typeof body?.method !== 'string') {
+                    return Response.json({ code: 'InvalidRequest', message: 'invalid rpc body' }, { status: 400 });
+                }
+                const handler = rpc[body.method];
+                if (!handler) {
+                    const response: RpcResponse = {
+                        id: body.id,
+                        ok: false,
+                        body: { code: 'NotFound', message: `unknown rpc method: ${body.method}` },
+                    };
+                    return Response.json(response);
+                }
+                try {
+                    const result = await handler(body.args, ctx);
+                    const response: RpcResponse = { id: body.id, ok: true, body: result };
+                    return Response.json(response);
+                } catch (error) {
+                    const response: RpcResponse = { id: body.id, ok: false, body: toHandlerError(error) };
+                    return Response.json(response);
+                }
+            }),
+        );
+    }
+
+    return routes;
 }
 
 function createContext<Env, Services>(
@@ -173,7 +249,7 @@ function createContext<Env, Services>(
 export function createApp<Env = unknown, Services extends Record<string, unknown> = Record<string, unknown>>(
     options: CreateAppOptions<Env, Services> = {},
 ): WaeApp<Env, Services> {
-    const routes = options.routes ?? [];
+    const routes = [...buildProtocolRoutes(options), ...(options.routes ?? [])];
     const middleware = options.middleware ?? [];
 
     return {
