@@ -1,0 +1,103 @@
+#!/usr/bin/env node
+/**
+ * check-publish — Cloudflare Workers Scripts API upload (mocked fetch).
+ */
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const packagesRoot = path.join(root, 'projects/packages');
+
+function buildPackages() {
+    for (const name of ['@wae/types', '@wae/serverless', '@wae/wae']) {
+        const r = spawnSync('pnpm', ['--filter', name, 'run', 'build'], {
+            cwd: root,
+            stdio: 'inherit',
+            shell: true,
+            windowsHide: true,
+        });
+        if (r.status !== 0) process.exit(r.status ?? 1);
+    }
+}
+
+buildPackages();
+
+const { publishWorkerBundle, workerScriptUploadUrl } = await import(
+    pathToFileURL(path.join(packagesRoot, 'serverless/dist/cloudflare/publish.js')).href
+);
+const { loadPublishArtifact } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/cli/publish-artifact.js')).href);
+const { resolveProductDir } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/cli/resolve-product-dir.js')).href);
+const { defineConfig } = await import(pathToFileURL(path.join(packagesRoot, 'wae/dist/index.js')).href);
+
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'wae-publish-'));
+try {
+    const productRoot = path.join(tmp, 'dist', 'web');
+    fs.mkdirSync(path.join(productRoot, 'server'), { recursive: true });
+    fs.writeFileSync(
+        path.join(productRoot, 'wae-product.json'),
+        `${JSON.stringify(
+            {
+                schemaVersion: 1,
+                name: 'demo-worker',
+                version: '0.0.0',
+                platform: 'web',
+                server: { deployTarget: 'cloudflare', entry: 'server/worker.mjs' },
+            },
+            null,
+            4,
+        )}\n`,
+        'utf8',
+    );
+    fs.writeFileSync(path.join(productRoot, 'server/worker.mjs'), 'export default { async fetch() { return new Response("ok") } }\n', 'utf8');
+
+    const artifact = loadPublishArtifact(productRoot);
+    assert.equal(artifact.moduleFile, 'worker.mjs');
+    assert.match(artifact.scriptBody, /export default/);
+
+    const resolved = resolveProductDir(tmp, {}, defineConfig({ deployTarget: 'cloudflare', product: { outDir: 'dist' } }));
+    assert.equal(resolved, productRoot);
+
+    let capturedUrl = '';
+    let capturedMethod = '';
+    let capturedAuth = '';
+    let capturedForm = null;
+    const result = await publishWorkerBundle({
+        accountId: 'acct_test',
+        apiToken: 'token_test',
+        scriptName: 'demo-worker',
+        moduleFile: artifact.moduleFile,
+        scriptBody: artifact.scriptBody,
+        fetch: async (url, init) => {
+            capturedUrl = String(url);
+            capturedMethod = init?.method ?? 'GET';
+            const headers = init?.headers;
+            if (headers instanceof Headers) {
+                capturedAuth = headers.get('Authorization') ?? '';
+            } else {
+                capturedAuth = headers?.Authorization ?? headers?.authorization ?? '';
+            }
+            capturedForm = init?.body;
+            return {
+                ok: true,
+                status: 200,
+                json: async () => ({ success: true, result: { etag: 'etag-demo' }, errors: [], messages: [] }),
+            };
+        },
+    });
+
+    assert.equal(capturedMethod, 'PUT');
+    assert.equal(capturedUrl, workerScriptUploadUrl('acct_test', 'demo-worker'));
+    assert.equal(capturedAuth, 'Bearer token_test');
+    assert.ok(capturedForm instanceof FormData);
+    assert.equal(result.scriptName, 'demo-worker');
+    assert.equal(result.moduleFile, 'worker.mjs');
+    assert.equal(result.etag, 'etag-demo');
+
+    console.log('check-publish: ok');
+} finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+}

@@ -684,6 +684,9 @@ importers:
       '@wae/commander':
         specifier: workspace:*
         version: link:../commander
+      '@wae/serverless':
+        specifier: workspace:*
+        version: link:../serverless
       '@wae/types':
         specifier: workspace:*
         version: link:../types

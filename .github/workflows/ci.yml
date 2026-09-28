@@ -122,6 +122,9 @@ jobs:
             - name: WebSocket contract
               run: pnpm run check:host-websocket
 
+            - name: Cloudflare publish API smoke
+              run: pnpm run check:publish
+
     host-deno:
         name: Deno host smoke
         runs-on: ubuntu-latest

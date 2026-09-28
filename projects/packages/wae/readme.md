@@ -33,6 +33,7 @@ Installing pulls `@wae/wae-*` by platform (`optionalDependencies`). Binary name:
 wae create <name> [--server node|deno|cloudflare]
 wae dev [--platform <id>] [--port <n>] [--host <addr>] [--open|--no-open]
 wae build [--platform <id>]
+wae publish [--platform <id>] [--out-dir <dir>]
 wae preview
 wae run [--platform <id>] [--port <n>] [--host <addr>] [--open|--no-open]
 wae check
