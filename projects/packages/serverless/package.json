@@ -45,6 +45,11 @@
             "types": "./dist/cloudflare/domains.d.ts",
             "import": "./dist/cloudflare/domains.js",
             "default": "./dist/cloudflare/domains.js"
+        },
+        "./cloudflare/bindings": {
+            "types": "./dist/cloudflare/bindings.d.ts",
+            "import": "./dist/cloudflare/bindings.js",
+            "default": "./dist/cloudflare/bindings.js"
         }
     },
     "files": [

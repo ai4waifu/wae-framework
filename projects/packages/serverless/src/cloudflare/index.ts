@@ -10,6 +10,13 @@ export {
 export { upgradeWebSocket, type CloudflareWebSocketPair, type CloudflareWebSocketRuntime } from './websocket.js';
 export { CloudflareApiError } from './api.js';
 export {
+    resolveWorkerBinding,
+    resolveWorkerBindings,
+    type CloudflareBindingInput,
+    type CloudflareBindingSpec,
+    type WorkerBindingWire,
+} from './bindings.js';
+export {
     buildWorkerUploadForm,
     publishWorkerBundle,
     workerScriptUploadUrl,
