@@ -2,8 +2,8 @@
 
 ## What this example demonstrates
 
-Full-stack RPC / action intent: same entry file constructs both `createClient` and `createServer`, showing “client and
-server contract in one repo placeholder”.
+Full-stack RPC / action intent: same entry file constructs both `createClient` and `createApp` with `actions` / `rpc`,
+showing “client and server contract in one repo placeholder”.
 
 ## Prerequisites
 
@@ -32,7 +32,7 @@ pnpm run build   # currently prints skeleton, no deployable output
 
 ## Key files
 
-- `src/main.ts` — both `createClient` + `createServer`
+- `src/main.ts` — both `createClient` + `createApp` (`actions` / `rpc`)
 - `package.json` — client / server / serverless
 
 ## Request / event path (target semantics)
@@ -40,7 +40,7 @@ pnpm run build   # currently prints skeleton, no deployable output
 ```text
 client.server.action / fetch
   → HTTP (or future isomorphic call)
-  → createServer route / handler
+  → `createApp` action / rpc handler
   → Response
   → client decode (action expects JSON)
 ```

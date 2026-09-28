@@ -50,7 +50,7 @@ browser WebSocket
 
 - Get HTTP `route` + `app.fetch` working first; then check how your runtime attaches WS (Node/Deno differ).
 - Contrast `backend/typescript/websocket`: no client there, here emphasizes full-stack pairing.
-- Do not treat empty `createServer()` as WS listening.
+- Do not treat empty `createApp()` as WS listening.
 
 ## Differences from production apps
 

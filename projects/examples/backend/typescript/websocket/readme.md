@@ -51,7 +51,7 @@ WS client
 
 - Complete HTTP `route` self-test first; then check how your runtime (Node/Deno) coexists WS with `fetch` app.
 - Contrast `fullstack/websocket`: no `@wae/client` here.
-- Avoid claiming empty `createServer()` supports WS.
+- Avoid claiming empty `createApp()` supports WS.
 
 ## Differences from production apps
 
