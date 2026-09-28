@@ -125,6 +125,9 @@ jobs:
             - name: Cloudflare publish API smoke
               run: pnpm run check:publish
 
+            - name: Publish flow smoke
+              run: pnpm run check:publish-flow
+
     host-deno:
         name: Deno host smoke
         runs-on: ubuntu-latest
