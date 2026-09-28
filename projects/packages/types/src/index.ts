@@ -17,6 +17,7 @@ export type {
     ClientPlatformId,
     WaeProductDownloadPolicy,
     WaeProductManifest,
+    WaeProductServerBundle,
     WaeProductUpdateChannel,
     WaeProductUpdateConfig,
 } from './product.js';

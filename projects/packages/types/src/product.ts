@@ -29,6 +29,12 @@ export type WaeProductUpdateConfig = {
     tag?: string;
 };
 
+export type WaeProductServerBundle = {
+    deployTarget: 'node' | 'deno' | 'cloudflare';
+    /** Server entry path relative to the product manifest directory. */
+    entry: string;
+};
+
 export type WaeProductManifest = {
     schemaVersion: 1;
     name: string;
@@ -38,6 +44,8 @@ export type WaeProductManifest = {
     nativePath?: string;
     /** Frontend bundle directory relative to manifest (e.g. `frontend`). */
     frontendDir?: string;
+    /** Bundled host entry when `wae build` runs with `deployTarget`. */
+    server?: WaeProductServerBundle;
     update?: WaeProductUpdateConfig;
 };
 
