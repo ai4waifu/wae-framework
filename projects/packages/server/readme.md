@@ -1,82 +1,45 @@
 # `@wae/server`
 
-Platform-agnostic Fetch app core: routing, middleware, `ctx.json` / `ctx.text`. Not bound to Node, Deno, or Cloudflare;
-connect to a runtime with `@wae/serverless` or `@wae/server-*`.
+Node.js / Deno **long-lived** server hosts. Shared HTTP app logic lives in `@wae/core` (`createApp`).
 
 ## Install
 
 ```bash
-pnpm add @wae/server@0.0.0
+pnpm add @wae/core@0.0.0 @wae/server@0.0.0
 ```
 
-## One real request path
+## Node
 
 ```ts
-import { createServer, route } from "@wae/server";
+import { createApp, route } from "@wae/core";
+import { serve } from "@wae/server/node";
 
-const app = createServer({
-  routes: [
-    route("GET", "/hello/:name", (ctx) => {
-      return ctx.json({ hello: ctx.request.params.name });
-    }),
-  ],
-  middleware: [
-    async (ctx, next) => {
-      const res = await next();
-      res.headers.set("x-wae", "1");
-      return res;
-    },
-  ],
+const app = createApp({
+  routes: [route("GET", "/hello", (ctx) => ctx.json({ ok: true }))],
 });
 
-const res = await app.fetch(new Request("http://local/hello/world"));
-// → 200 JSON { "hello": "world" }
+await serve(app, { port: 3000 });
 ```
 
-```text
-Request
-  → parse method / pathname
-  → middleware in order (may call next)
-  → match route (supports :param)
-  → handler(ctx)
-  → Response
-No match → 404 "Not Found"
-handler throws → 500 + error message text
-```
-
-## `ctx` capabilities
-
-| Field/method       | Meaning                                         |
-|--------------------|-------------------------------------------------|
-| `request`          | `method` / `url` / `headers` / `raw` / `params` |
-| `env` / `services` | Injected by caller or `services` factory        |
-| `signal`           | AbortSignal                                     |
-| `waitUntil`        | Forward to execution (Worker style)             |
-| `json` / `text`    | Shortcut Response                               |
-| `platform`         | Optional platform attachment                    |
-
-`route(method, path, handler)` or `route(path, handler)` (method is `*`).
-
-## With serverless / runtime
+## Deno
 
 ```ts
-import { adaptFetch } from "@wae/serverless";
-export default adaptFetch(app); // { fetch }
+import { createApp } from "@wae/core";
+import { serve } from "@wae/server/deno";
 
-// or
-import { createCloudflareApp } from "@wae/server-cloudflare";
-export default createCloudflareApp(app);
+const app = createApp();
+export default { fetch: serve(app) };
 ```
 
-## Current limits
+## Exports
 
-- No built-in WebSocket upgrade, streaming body helpers, or file upload parsing.
-- No built-in auth middleware.
-- Simple segment routing only; no regex/wildcard tail segments.
+| Subpath | Role |
+|---------|------|
+| `.` | Re-exports `@wae/core` app types (`createApp`, `route`, …) for convenience |
+| `./node` | `serve(app)` for Node.js / Bun |
+| `./deno` | `serve(app)` → Fetch handler; calls `Deno.serve` when available |
 
 ## Related
 
-- [`../serverless/readme.md`](../serverless/readme.md)
-- [`../adapters/node/readme.md`](../adapters/node/readme.md)
-- [`../adapters/deno/readme.md`](../adapters/deno/readme.md)
-- [`../adapters/cloudflare/readme.md`](../adapters/cloudflare/readme.md)
+- App factory: [`@wae/core`](../core/readme.md)
+- Workers: [`@wae/serverless`](../serverless/readme.md)

@@ -1,48 +1,38 @@
 # `@wae/serverless`
 
-Adapts `@wae/server` `WaeServerApp` to a **standard Fetch export** `{ fetch }`. For Worker / Edge / any host that
-exports `fetch`; not a separate business API.
+Cloudflare Workers and other **per-request** edge hosts. Does **not** depend on `@wae/server`.
 
 ## Install
 
 ```bash
-pnpm add @wae/server@0.0.0 @wae/serverless@0.0.0
+pnpm add @wae/core@0.0.0 @wae/serverless@0.0.0
 ```
 
-## Lifecycle differences
-
-|             | `@wae/server`                  | `@wae/serverless`                           |
-|-------------|--------------------------------|---------------------------------------------|
-| Entry       | `app.fetch(request, context?)` | `adaptFetch(app).fetch(request, env, ctx?)` |
-| env         | Caller puts in context         | Second param `env`                          |
-| `waitUntil` | `execution.waitUntil`          | `ctx.waitUntil`                             |
-
-serverless has **no** long-lived process handle; each request is independent. For long-lived use `@wae/server-node`.
-
-## Usage
+## Cloudflare Worker
 
 ```ts
-import { createServer, route } from "@wae/server";
-import { adaptFetch } from "@wae/serverless";
+import { createApp, route } from "@wae/core";
+import { worker } from "@wae/serverless/cloudflare";
 
-const app = createServer({
+const app = createApp({
   routes: [route("GET", "/", (ctx) => ctx.text("ok"))],
 });
 
-export const { fetch } = adaptFetch(app);
-// fetch(request, env, { waitUntil })
+export default worker(app);
 ```
 
-`serverless` is a deprecated alias for `adaptFetch`; new code should use `adaptFetch`.
+`worker(app)` calls `app.fetch` directly — no `adaptFetch` layer.
 
-## Other exports
+## Exports
 
-| API                           | Purpose                                         |
-|-------------------------------|-------------------------------------------------|
-| `readBinding(map, name)`      | Read from binding map                           |
-| `runWithLifecycle(hooks, fn)` | Wrap startup / shutdown hooks (skeleton helper) |
+| Subpath | Role |
+|---------|------|
+| `.` | `readBinding`, `runWithLifecycle` |
+| `./cloudflare` | `worker`, `cloudflareKv`, deprecated `createWorker` / `createCloudflareApp` aliases |
+| `./cloudflare/durable-objects` | `WaeDurableObject` base |
+| `./cloudflare/queues` | Queue handler types |
 
 ## Related
 
-- Cloudflare: [`@wae/server-cloudflare`](../adapters/cloudflare/readme.md)
-- Deno: [`@wae/server-deno`](../adapters/deno/readme.md)
+- App factory: [`@wae/core`](../core/readme.md)
+- Node / Deno: [`@wae/server`](../server/readme.md)
