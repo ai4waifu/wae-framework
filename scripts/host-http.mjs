@@ -67,6 +67,7 @@ async function testCoreFetch(createApp, route) {
 
     const wrongMethod = await app.fetch(new Request('http://test/health', { method: 'POST' }));
     assert.equal(wrongMethod.status, 405);
+    assert.equal(wrongMethod.headers.get('Allow'), 'GET');
 
     const boom = await app.fetch(new Request('http://test/boom'));
     assert.equal(boom.status, 500);

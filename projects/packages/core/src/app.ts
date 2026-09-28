@@ -116,6 +116,20 @@ function matchPath(pattern: string, pathname: string): Record<string, string> | 
     return params;
 }
 
+function collectAllowedMethods<Env, Services>(pathname: string, routes: Route<Env, Services>[]): string[] {
+    const methods = new Set<string>();
+    for (const candidate of routes) {
+        if (!matchPath(candidate.path, pathname)) continue;
+        if (candidate.method !== '*') methods.add(candidate.method);
+    }
+    return [...methods].sort();
+}
+
+function methodNotAllowedResponse(allowedMethods: string[]): Response {
+    const headers = allowedMethods.length > 0 ? { Allow: allowedMethods.join(', ') } : undefined;
+    return new Response('Method Not Allowed', { status: 405, headers });
+}
+
 function createContext<Env, Services>(
     request: Request,
     params: Record<string, string>,
@@ -194,6 +208,7 @@ export function createApp<Env = unknown, Services extends Record<string, unknown
             let matched: Route<Env, Services> | undefined;
             let params: Record<string, string> = {};
             let pathMatched = false;
+            const allowedMethods = collectAllowedMethods(url.pathname, routes);
 
             for (const candidate of routes) {
                 const found = matchPath(candidate.path, url.pathname);
@@ -212,7 +227,7 @@ export function createApp<Env = unknown, Services extends Record<string, unknown
             const runHandler = async (): Promise<Response> => {
                 if (!matched) {
                     if (pathMatched) {
-                        return new Response('Method Not Allowed', { status: 405 });
+                        return methodNotAllowedResponse(allowedMethods);
                     }
                     return new Response('Not Found', { status: 404 });
                 }
