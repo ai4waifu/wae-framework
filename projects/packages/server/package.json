@@ -44,10 +44,12 @@
     "dependencies": {
         "@wae/types": "workspace:*",
         "@wae/core": "workspace:*",
-        "@wae/protocol": "workspace:*"
+        "@wae/protocol": "workspace:*",
+        "ws": "^8.18.3"
     },
     "devDependencies": {
         "@types/node": "^22.0.0",
+        "@types/ws": "^8.18.1",
         "typescript": "catalog:"
     },
     "repository": {
