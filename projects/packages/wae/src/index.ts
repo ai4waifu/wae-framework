@@ -54,6 +54,8 @@ export type WaeConfig = {
         scriptName?: string;
         compatibilityDate?: string;
         bindings?: Array<Record<string, unknown>>;
+        /** HTTP route patterns bound to the published script (`syncWorkerRoutes`). */
+        routes?: Array<{ pattern: string }>;
     };
     server?: {
         entry?: string;
@@ -111,6 +113,7 @@ export function defineConfig(config: WaeConfig): WaeConfig {
                   scriptName: config.cloudflare.scriptName,
                   compatibilityDate: config.cloudflare.compatibilityDate,
                   bindings: config.cloudflare.bindings,
+                  routes: config.cloudflare.routes,
               }
             : undefined,
         server: config.server

@@ -2,6 +2,7 @@
 
 import type { WaePublishOptions } from '@wae/commander';
 import { publishWorkerBundle } from '@wae/serverless/cloudflare/publish';
+import { syncWorkerRoutes } from '@wae/serverless/cloudflare/routes';
 import { resolveDeployTarget } from './deploy-target.js';
 import { loadWaeConfig } from './load-config.js';
 import { loadPublishArtifact } from './publish-artifact.js';
@@ -42,6 +43,25 @@ export async function cmdPublish(options: WaePublishOptions): Promise<void> {
         compatibilityDate: config.cloudflare?.compatibilityDate,
         bindings: config.cloudflare?.bindings,
     });
+
+    const routes = config.cloudflare?.routes;
+    if (routes?.length) {
+        const routeSync = await syncWorkerRoutes({
+            accountId: credentials.accountId,
+            apiToken: credentials.apiToken,
+            scriptName,
+            routes,
+        });
+        if (routeSync.created.length) {
+            console.log(`[wae publish] routes created=${routeSync.created.join(',')}`);
+        }
+        if (routeSync.updated.length) {
+            console.log(`[wae publish] routes updated=${routeSync.updated.join(',')}`);
+        }
+        if (routeSync.unchanged.length) {
+            console.log(`[wae publish] routes unchanged=${routeSync.unchanged.join(',')}`);
+        }
+    }
 
     console.log(`[wae publish] script=${result.scriptName}`);
     console.log(`[wae publish] account=${result.accountId}`);
